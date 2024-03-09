@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.ApplicationServices", "SkyHawk.ApplicationServices\SkyHawk.ApplicationServices.csproj", "{AD484767-18E6-498E-B867-825192E1B318}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.ApplicationServicesTests", "SkyHawk.ApplicationServicesTests\SkyHawk.ApplicationServicesTests.csproj", "{31CE805B-1262-4C4C-9447-22F1515FCE69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.Data", "SkyHawk.Data\SkyHawk.Data.csproj", "{DA13FE79-8C0E-458C-B741-3499BF771939}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.WebAPI", "SkyHawk.WebAPI\SkyHawk.WebAPI.csproj", "{B9640B4E-3E36-413F-936E-D66CC45B9098}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.WebAPITests", "SkyHawk.WebAPITests\SkyHawk.WebAPITests.csproj", "{084C91C1-12BC-49A2-9A80-250CCBE1710F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AD484767-18E6-498E-B867-825192E1B318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD484767-18E6-498E-B867-825192E1B318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD484767-18E6-498E-B867-825192E1B318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD484767-18E6-498E-B867-825192E1B318}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31CE805B-1262-4C4C-9447-22F1515FCE69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31CE805B-1262-4C4C-9447-22F1515FCE69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31CE805B-1262-4C4C-9447-22F1515FCE69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31CE805B-1262-4C4C-9447-22F1515FCE69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA13FE79-8C0E-458C-B741-3499BF771939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA13FE79-8C0E-458C-B741-3499BF771939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA13FE79-8C0E-458C-B741-3499BF771939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA13FE79-8C0E-458C-B741-3499BF771939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Release|Any CPU.Build.0 = Release|Any CPU
+		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
