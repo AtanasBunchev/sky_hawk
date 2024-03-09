@@ -22,4 +22,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SkyHawk.ApplicationServices\SkyHawk.ApplicationServices.csproj" />
+    <ProjectReference Include="..\SkyHawk.DataMock\SkyHawk.DataMock.csproj" />
+  </ItemGroup>
+
 </Project>
