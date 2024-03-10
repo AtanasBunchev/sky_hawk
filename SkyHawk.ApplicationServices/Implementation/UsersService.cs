@@ -151,6 +151,22 @@ public class UsersService : IUsersService
 
     public async Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented, "Not implemented");
+        User? user = (await GetUserByNameAsync(new(request.Username))).User;
+        if(user == null)
+            return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+
+
+        if(user.Password != request.Password)
+            return new(BusinessStatusCodeEnum.AuthenticationFailed, "Wrong password!");
+
+        string token = GenerateJwtTokenInternal(user);
+
+        return new(token, "Authentication successfull.");
+    }
+
+
+    private string GenerateJwtTokenInternal(User user)
+    {
+        return "Not implemented";
     }
 }
