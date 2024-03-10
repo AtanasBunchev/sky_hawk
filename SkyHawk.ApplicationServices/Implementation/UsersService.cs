@@ -89,7 +89,7 @@ public class UsersService : IUsersService
 
     public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request)
     {
-        return new();
+        return new(BusinessStatusCodeEnum.NotImplemented, "Not implemented");
     }
 
 

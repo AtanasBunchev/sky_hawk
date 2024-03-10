@@ -2,8 +2,9 @@ namespace SkyHawk.ApplicationServices.Messaging.Responses;
 
 public class UpdateUserResponse : ResponseBase
 {
-    public UpdateUserResponse()
+    public UpdateUserResponse(BusinessStatusCodeEnum statusCode, string messageText)
     {
-    
+        StatusCode = statusCode;
+        MessageText = messageText;
     }
 };
