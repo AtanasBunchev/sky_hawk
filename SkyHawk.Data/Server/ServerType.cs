@@ -6,7 +6,7 @@ public enum ServerType
 {
     Unknown = 0,
     MinetestGame = 16,
-    NodeCoreGame,
+    NodeCore,
     DDNet = 32
 }
 
