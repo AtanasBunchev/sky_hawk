@@ -138,7 +138,14 @@ public class UsersService : IUsersService
 
     public async Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented, "Not implemented");
+        var user = (await GetUserByIdAsync(new(request.Id))).User;
+        if(user == null)
+            return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+
+        _context.Remove(user);
+        await _context.SaveChangesAsync();
+
+        return new(BusinessStatusCodeEnum.Success, "User deleted successfully.");
     }
 
 
