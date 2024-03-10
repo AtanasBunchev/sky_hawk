@@ -1,5 +1,6 @@
 using Docker.DotNet;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging;
 using SkyHawk.ApplicationServices.Messaging.Requests;
@@ -7,8 +8,11 @@ using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Contexts;
 using SkyHawk.Data.Entities;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Reflection;
+using System.Security.Claims;
+using System.Text;
 
 namespace SkyHawk.ApplicationServices.Implementation;
 
@@ -179,6 +183,29 @@ public class UsersService : IUsersService
 
     private string GenerateJwtTokenInternal(User user)
     {
-        return "Not implemented";
+        var claims = new[]
+        {
+            new Claim("LoggedUserId", user.Id.ToString())
+        };
+
+        var signingKey = new SymmetricSecurityKey(
+            Encoding.ASCII.GetBytes("785e26cdd9464e8b92c0cd41ae8df74c")
+        );
+
+        var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            "SkyHawk", // issue
+            "SkyHawk", // audience
+            claims,
+            expires: DateTime.UtcNow.AddMinutes(90),
+            signingCredentials: signingCredentials
+        );
+
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var encodedToken = tokenHandler.WriteToken(token);
+
+        return encodedToken;
     }
 }
