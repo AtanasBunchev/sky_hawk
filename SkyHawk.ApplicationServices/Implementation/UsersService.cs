@@ -1,4 +1,5 @@
 using Docker.DotNet;
+using Microsoft.EntityFrameworkCore;
 using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
@@ -21,7 +22,7 @@ public class UsersService : IUsersService
 
     public async Task<GetUsersResponse> GetUsersAsync(GetUsersRequest request)
     {
-        return new(new List<User>(){});
+        return new(await _context.Users.ToListAsync());
     }
 
 
