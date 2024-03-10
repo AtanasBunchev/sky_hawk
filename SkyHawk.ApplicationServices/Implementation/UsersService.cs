@@ -1,17 +1,20 @@
-using SkyHawk.Data.Contexts;
+using Docker.DotNet;
 using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
+using SkyHawk.Data.Contexts;
 
 namespace SkyHawk.ApplicationServices.Implementation;
 
 public class UsersService : IUsersService
 {
     SkyHawkDbContext _context;
+    IDockerClient _docker;
 
-    public UsersService(SkyHawkDbContext context)
+    public UsersService(SkyHawkDbContext context, IDockerClient docker)
     {
         _context = context;
+        _docker = docker;
     }
 
 
