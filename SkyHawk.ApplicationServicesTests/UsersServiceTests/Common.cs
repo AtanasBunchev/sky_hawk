@@ -24,7 +24,7 @@ public partial class UsersServiceTests
     {
         return new (){
             Username = "Name",
-            Password = "Pass",
+            Password = "Password",
         };
     }
 }

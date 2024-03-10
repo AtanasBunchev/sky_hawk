@@ -28,10 +28,25 @@ public partial class UsersServiceTests
     {
         var template = this.GetValidUserEntity();
 
-        var response = await _service.CreateUserAsync(new("", template.Password));
+        var response = await _service.CreateUserAsync(new("u", template.Password));
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
 
-        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == "");
+        response = await _service.CreateUserAsync(new(new String('u', 200), template.Password));
+        Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
+
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == "u");
+        Assert.Null(user);
+    }
+
+    [Fact]
+    public async void TestCreateUser_InvalidPassword()
+    {
+        var template = this.GetValidUserEntity();
+
+        var response = await _service.CreateUserAsync(new(template.Username, "p"));
+        Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
+
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == template.Password);
         Assert.Null(user);
     }
 
