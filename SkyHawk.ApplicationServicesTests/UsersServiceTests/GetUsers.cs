@@ -1,5 +1,3 @@
-using SkyHawk.ApplicationServices.Implementation;
-using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.Data.Entities;
 
 namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
@@ -19,7 +17,7 @@ public partial class UsersServiceTests
         var response = await _service.GetUsersAsync(new());
 
         Assert.NotEmpty(response.Users);
-        Assert.Equal(1, response.Users.Count);
+        Assert.Single(response.Users);
         foreach(var returnedUser in response.Users)
             Assert.Equal(user, returnedUser);
     }

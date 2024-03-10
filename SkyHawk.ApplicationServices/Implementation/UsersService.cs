@@ -1,6 +1,7 @@
 using Docker.DotNet;
 using Microsoft.EntityFrameworkCore;
 using SkyHawk.ApplicationServices.Interfaces;
+using SkyHawk.ApplicationServices.Messaging;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Contexts;
@@ -39,7 +40,7 @@ public class UsersService : IUsersService
 
     public async Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request)
     {
-        return new();
+        return new(BusinessStatusCodeEnum.NotImplemented, "Not Implemented");
     }
 
 

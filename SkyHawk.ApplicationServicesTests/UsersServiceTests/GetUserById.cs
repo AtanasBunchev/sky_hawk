@@ -1,5 +1,3 @@
-using SkyHawk.ApplicationServices.Implementation;
-using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.Data.Entities;
 
