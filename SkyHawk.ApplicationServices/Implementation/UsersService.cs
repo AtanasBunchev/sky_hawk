@@ -151,6 +151,6 @@ public class UsersService : IUsersService
 
     public async Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request)
     {
-        return new();
+        return new(BusinessStatusCodeEnum.NotImplemented, "Not implemented");
     }
 }
