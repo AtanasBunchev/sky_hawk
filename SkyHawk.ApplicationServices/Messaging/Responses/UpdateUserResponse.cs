@@ -1,6 +1,6 @@
 namespace SkyHawk.ApplicationServices.Messaging.Responses;
 
-public class UpdateUserResponse
+public class UpdateUserResponse : ResponseBase
 {
     public UpdateUserResponse()
     {

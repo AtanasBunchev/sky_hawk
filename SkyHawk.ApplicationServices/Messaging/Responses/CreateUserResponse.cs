@@ -1,6 +1,6 @@
 namespace SkyHawk.ApplicationServices.Messaging.Responses;
 
-public class CreateUserResponse
+public class CreateUserResponse : ResponseBase
 {
     public CreateUserResponse()
     {

@@ -1,6 +1,6 @@
 namespace SkyHawk.ApplicationServices.Messaging.Responses;
 
-public class AuthenticateUserResponse
+public class AuthenticateUserResponse : ResponseBase
 {
     public AuthenticateUserResponse()
     {
