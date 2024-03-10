@@ -2,8 +2,8 @@ namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
 public class CreateUserRequest
 {
-    public string Username;
-    public string Password;
+    public string Username { get; set; }
+    public string Password { get; set; }
 
     public CreateUserRequest(string username, string password)
     {
