@@ -3,6 +3,7 @@ using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Contexts;
+using SkyHawk.Data.Entities;
 
 namespace SkyHawk.ApplicationServices.Implementation;
 
@@ -20,7 +21,7 @@ public class UsersService : IUsersService
 
     public async Task<GetUsersResponse> GetUsersAsync(GetUsersRequest request)
     {
-        return new();
+        return new(new List<User>(){});
     }
 
 
