@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SkyHawk.DataMock.Contexts;
 
@@ -10,9 +11,11 @@ using SkyHawk.DataMock.Contexts;
 namespace SkyHawk.DataMock.Migrations
 {
     [DbContext(typeof(SkyHawkDbContextMock))]
-    partial class SkyHawkDbContextMockModelSnapshot : ModelSnapshot
+    [Migration("20240310192807_Add string length constraints")]
+    partial class Addstringlengthconstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.0");

@@ -1,10 +1,15 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SkyHawk.Data.Entities;
 
 public class User : Entity
 {
+    [MaxLength(64)]
+    [MinLength(3)]
     public string Username { get; set; } = null!;
+    [MaxLength(128)]
+    [MinLength(6)]
     public string Password { get; set; } = null!;
 
     public DateTime CreateTime { get; set; } = DateTime.Now;

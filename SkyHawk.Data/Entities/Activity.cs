@@ -17,7 +17,9 @@ public class Activity : Entity
     public DateTime? EndTime { get; set; }
     public StartReasonEnum StartReason = StartReasonEnum.Unknown;
 
+    [MaxLength(64)]
     public string Name { get; set; } = null!;
+    [MaxLength(1024)]
     public string Description { get; set; } = null!;
     //public string Logs { get; set; } = null!;
 }
