@@ -18,9 +18,10 @@ public interface IUsersService
     // Modify user
     public Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request);
 
-    // Authentication
-    public Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request);
-
     // Delete user
     public Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request);
+
+
+    // Authentication
+    public Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request);
 }

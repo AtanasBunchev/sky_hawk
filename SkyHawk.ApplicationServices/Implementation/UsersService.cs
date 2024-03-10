@@ -136,13 +136,13 @@ public class UsersService : IUsersService
     }
 
 
-    public async Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request)
+    public async Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request)
     {
-        return new();
+        return new(BusinessStatusCodeEnum.NotImplemented, "Not implemented");
     }
 
 
-    public async Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request)
+    public async Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request)
     {
         return new();
     }
