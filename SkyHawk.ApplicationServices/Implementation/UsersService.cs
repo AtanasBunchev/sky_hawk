@@ -28,12 +28,12 @@ public class UsersService : IUsersService
 
     public async Task<GetUserResponse> GetUserByNameAsync(GetByNameRequest request)
     {
-        return new();
+        return new(new());
     }
 
     public async Task<GetUserResponse> GetUserByIdAsync(GetByIdRequest request)
     {
-        return new();
+        return new(new());
     }
 
 
