@@ -6,8 +6,9 @@ using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Contexts;
 using SkyHawk.Data.Entities;
-using System.Reflection;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 
 namespace SkyHawk.ApplicationServices.Implementation;
 
@@ -162,6 +163,17 @@ public class UsersService : IUsersService
         string token = GenerateJwtTokenInternal(user);
 
         return new(token, "Authentication successfull.");
+    }
+
+    public async Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetByIdRequest request)
+    {
+        User? user = (await GetUserByIdAsync(new(request.Id))).User;
+        if(user == null)
+            return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+
+        string token = GenerateJwtTokenInternal(user);
+
+        return new(token, "JWT Token generated successfully.");
     }
 
 

@@ -16,6 +16,8 @@ public partial class UsersServiceTests
         var response = await _service.AuthenticateUserAsync(new(user.Username, user.Password));
         Assert.Equal(BusinessStatusCodeEnum.Success, response.StatusCode);
         Assert.NotNull(response.BearerToken);
+
+        TestJwtToken(user, response.BearerToken);
     }
 
     [Fact]

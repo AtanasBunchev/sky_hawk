@@ -24,4 +24,6 @@ public interface IUsersService
 
     // Authentication
     public Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request);
+
+    public Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetByIdRequest request);
 }
