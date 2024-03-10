@@ -28,12 +28,12 @@ public class UsersService : IUsersService
 
     public async Task<GetUserResponse> GetUserByNameAsync(GetByNameRequest request)
     {
-        return new(new());
+        return new(await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Name));
     }
 
     public async Task<GetUserResponse> GetUserByIdAsync(GetByIdRequest request)
     {
-        return new(new());
+        return new(await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id));
     }
 
 
