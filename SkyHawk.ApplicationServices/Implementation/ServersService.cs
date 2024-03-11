@@ -35,12 +35,30 @@ public class ServersService : IServersService
 
     public async Task<GetServerResponse> GetServerByIdAsync(GetServerByIdRequest request)
     {
-        return new(null);
+        _context.Servers
+            .Include(c => c.Owner)
+            .Load();
+
+        return new(
+            await _context.Servers
+                .SingleOrDefaultAsync(x => 
+                    x.Owner.Id == request.User.Id &&
+                    x.Id == request.Id)
+        );
     }
 
     public async Task<GetServerResponse> GetServerByNameAsync(GetServerByNameRequest request)
     {
-        return new(null);
+        _context.Servers
+            .Include(c => c.Owner)
+            .Load();
+
+        return new(
+            await _context.Servers
+                .SingleOrDefaultAsync(x => 
+                    x.Owner.Id == request.User.Id &&
+                    x.Name == request.Name)
+        );
     }
 
 
