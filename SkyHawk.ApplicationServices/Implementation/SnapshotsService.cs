@@ -32,14 +32,14 @@ public class SnapshotsService : ISnapshotsService
     }
 
 
-    public async Task<GetSnapshotResponse> GetSnapshotAsync(GetByIdRequest request)
+    public async Task<GetSnapshotResponse> GetSnapshotByIdAsync(GetSnapshotByIdRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        return new(null);
     }
 
-    public async Task<GetSnapshotResponse> GetSnapshotAsync(GetByNameRequest request)
+    public async Task<GetSnapshotResponse> GetSnapshotByNameAsync(GetSnapshotByNameRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        return new(null);
     }
 
 

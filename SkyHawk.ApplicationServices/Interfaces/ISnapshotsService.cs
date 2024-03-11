@@ -9,8 +9,8 @@ public interface ISnapshotsService
     public Task<ListSnapshotsResponse> ListSnapshotsAsync(ListSnapshotsRequest request);
 
     // Get snapshot
-    public Task<GetSnapshotResponse> GetSnapshotAsync(GetByIdRequest request);
-    public Task<GetSnapshotResponse> GetSnapshotAsync(GetByNameRequest request);
+    public Task<GetSnapshotResponse> GetSnapshotByIdAsync(GetSnapshotByIdRequest request);
+    public Task<GetSnapshotResponse> GetSnapshotByNameAsync(GetSnapshotByNameRequest request);
 
     // Create snapshot
     public Task<CreateSnapshotResponse> CreateSnapshotAsync(CreateSnapshotRequest request);
