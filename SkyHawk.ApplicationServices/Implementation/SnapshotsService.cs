@@ -24,7 +24,11 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<ListSnapshotsResponse> ListSnapshotsAsync(ListSnapshotsRequest request)
     {
-        return new(new List<Snapshot>(), BusinessStatusCodeEnum.NotImplemented);
+        _context.Snapshots
+            .Include(c => c.Owner)
+            .Load();
+
+        return new(await _context.Snapshots.Where(x => x.Owner.Id == request.User.Id).ToListAsync());
     }
 
 
