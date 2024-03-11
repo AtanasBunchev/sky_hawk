@@ -79,6 +79,11 @@ public class ServersService : IServersService
         return new(BusinessStatusCodeEnum.NotImplemented);
     }
 
+    public async Task<UpdateServerImageResponse> UpdateServerImageAsync(UpdateServerImageRequest request)
+    {
+        return new(BusinessStatusCodeEnum.NotImplemented);
+    }
+
 
     public async Task<DeleteServerResponse> DeleteServerAsync(DeleteServerRequest request)
     {

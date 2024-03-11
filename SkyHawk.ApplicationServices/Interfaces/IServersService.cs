@@ -20,6 +20,8 @@ public interface IServersService
     // Modify server instance
     public Task<UpdateServerResponse> UpdateServerAsync(UpdateServerRequest request);
 
+    public Task<UpdateServerImageResponse> UpdateServerImageAsync(UpdateServerImageRequest request);
+
     // Delete server instance
     public Task<DeleteServerResponse> DeleteServerAsync(DeleteServerRequest request);
 
