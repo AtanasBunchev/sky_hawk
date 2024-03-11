@@ -34,12 +34,12 @@ public class UsersService : IUsersService
     }
 
 
-    public async Task<GetUserResponse> GetUserByNameAsync(GetByNameRequest request)
+    public async Task<GetUserResponse> GetUserByNameAsync(GetUserByNameRequest request)
     {
         return new(await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Name));
     }
 
-    public async Task<GetUserResponse> GetUserByIdAsync(GetByIdRequest request)
+    public async Task<GetUserResponse> GetUserByIdAsync(GetUserByIdRequest request)
     {
         return new(await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id));
     }
@@ -169,7 +169,7 @@ public class UsersService : IUsersService
         return new(token, "Authentication successfull.");
     }
 
-    public async Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetByIdRequest request)
+    public async Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetUserByIdRequest request)
     {
         User? user = (await GetUserByIdAsync(new(request.Id))).User;
         if(user == null)

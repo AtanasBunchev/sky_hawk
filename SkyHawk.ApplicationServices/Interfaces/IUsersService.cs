@@ -9,8 +9,8 @@ public interface IUsersService
     public Task<ListUsersResponse> ListUsersAsync(ListUsersRequest request);
 
     // Get user
-    public Task<GetUserResponse> GetUserByNameAsync(GetByNameRequest request);
-    public Task<GetUserResponse> GetUserByIdAsync(GetByIdRequest request);
+    public Task<GetUserResponse> GetUserByNameAsync(GetUserByNameRequest request);
+    public Task<GetUserResponse> GetUserByIdAsync(GetUserByIdRequest request);
 
     // Create user
     public Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request);
@@ -25,5 +25,5 @@ public interface IUsersService
     // Authentication
     public Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request);
 
-    public Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetByIdRequest request);
+    public Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetUserByIdRequest request);
 }

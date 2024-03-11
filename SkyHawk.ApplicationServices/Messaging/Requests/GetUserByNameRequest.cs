@@ -1,10 +1,10 @@
 namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
-public class GetByNameRequest
+public class GetUserByNameRequest
 {
     public string Name { get; set; }
 
-    public GetByNameRequest(string name)
+    public GetUserByNameRequest(string name)
     {
         Name = name;
     }

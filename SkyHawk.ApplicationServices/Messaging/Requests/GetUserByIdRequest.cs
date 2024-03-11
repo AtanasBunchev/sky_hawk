@@ -1,10 +1,10 @@
 namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
-public class GetByIdRequest
+public class GetUserByIdRequest
 {
     public int Id { get; set; }
 
-    public GetByIdRequest(int id)
+    public GetUserByIdRequest(int id)
     {
         Id = id;
     }
