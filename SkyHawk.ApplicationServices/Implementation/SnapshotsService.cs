@@ -34,12 +34,30 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<GetSnapshotResponse> GetSnapshotByIdAsync(GetSnapshotByIdRequest request)
     {
-        return new(null);
+        _context.Snapshots
+            .Include(c => c.Owner)
+            .Load();
+
+        return new(
+            await _context.Snapshots
+                .SingleOrDefaultAsync(x => 
+                    x.Owner.Id == request.User.Id &&
+                    x.Id == request.Id)
+        );
     }
 
     public async Task<GetSnapshotResponse> GetSnapshotByNameAsync(GetSnapshotByNameRequest request)
     {
-        return new(null);
+        _context.Snapshots
+            .Include(c => c.Owner)
+            .Load();
+
+        return new(
+            await _context.Snapshots
+                .SingleOrDefaultAsync(x => 
+                    x.Owner.Id == request.User.Id &&
+                    x.Name == request.Name)
+        );
     }
 
 
