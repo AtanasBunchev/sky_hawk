@@ -11,7 +11,7 @@ public partial class ServersServiceTests
 {
     private SkyHawkDbContextMock _context;
     private Mock<IDockerClient> _docker;
-    private ISnapshotsService _service;
+    private IServersService _service;
 
     private User _user;
 
@@ -19,7 +19,7 @@ public partial class ServersServiceTests
     {
         _context = new();
         _docker = new();
-        _service = new SnapshotsService(_context, _docker.Object);
+        _service = new ServersService(_context, _docker.Object);
 
         _user = UsersServiceTests.GetValidUserEntity();
         _context.Add(_user);
