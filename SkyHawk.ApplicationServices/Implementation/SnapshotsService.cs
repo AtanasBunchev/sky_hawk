@@ -24,7 +24,7 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<ListSnapshotsResponse> ListSnapshotsAsync(ListSnapshotsRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        return new(new List<Snapshot>(), BusinessStatusCodeEnum.NotImplemented);
     }
 
 
