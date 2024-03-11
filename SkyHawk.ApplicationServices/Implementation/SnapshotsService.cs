@@ -75,7 +75,14 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<DeleteSnapshotResponse> DeleteSnapshotAsync(DeleteSnapshotRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var snapshot = (await GetSnapshotByIdAsync(new(request.User, request.Id))).Snapshot;
+        if(snapshot == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found!");
+
+        _context.Remove(snapshot);
+        await _context.SaveChangesAsync();
+
+        return new(BusinessStatusCodeEnum.Success, "Snapshot deleted successfully.");
     }
 
 }
