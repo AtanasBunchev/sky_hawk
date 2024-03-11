@@ -8,6 +8,7 @@ using SkyHawk.Data.Contexts;
 using SkyHawk.Data.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using System.Linq;
 
 namespace SkyHawk.ApplicationServices.Implementation;
 
@@ -24,7 +25,11 @@ public class ServersService : IServersService
 
     public async Task<ListServersResponse> ListServersAsync(ListServersRequest request)
     {
-        return new(new List<ServerInstance>(), BusinessStatusCodeEnum.NotImplemented);
+        _context.Servers
+            .Include(c => c.Owner)
+            .Load();
+
+        return new(await _context.Servers.Where(x => x.Owner.Id == request.User.Id).ToListAsync());
     }
 
 
