@@ -4,8 +4,10 @@ namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
 public class DeleteSnapshotRequest : SnapshotRequestBase
 {
-    public DeleteSnapshotRequest(User user) : base(user)
-    {
+    public int Id { get; set; }
 
+    public DeleteSnapshotRequest(User user, int id) : base(user)
+    {
+        Id = id;
     }
 };
