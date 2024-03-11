@@ -9,8 +9,8 @@ public interface IServersService
     public Task<ListServersResponse> ListServersAsync(ListServersRequest request);
 
     // Get server instance
-    public Task<GetServerResponse> GetServerByIdAsync(GetByIdRequest request);
-    public Task<GetServerResponse> GetServerByNameAsync(GetByNameRequest request);
+    public Task<GetServerResponse> GetServerByIdAsync(GetServerByIdRequest request);
+    public Task<GetServerResponse> GetServerByNameAsync(GetServerByNameRequest request);
 
     // Create server instance
     public Task<CreateServerFromImageResponse> CreateServerFromImageAsync(CreateServerFromImageRequest request);

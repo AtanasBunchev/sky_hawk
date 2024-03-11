@@ -33,14 +33,14 @@ public class ServersService : IServersService
     }
 
 
-    public async Task<GetServerResponse> GetServerByIdAsync(GetByIdRequest request)
+    public async Task<GetServerResponse> GetServerByIdAsync(GetServerByIdRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        return new(null);
     }
 
-    public async Task<GetServerResponse> GetServerByNameAsync(GetByNameRequest request)
+    public async Task<GetServerResponse> GetServerByNameAsync(GetServerByNameRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        return new(null);
     }
 
 
