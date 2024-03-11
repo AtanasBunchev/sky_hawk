@@ -82,7 +82,14 @@ public class ServersService : IServersService
 
     public async Task<DeleteServerResponse> DeleteServerAsync(DeleteServerRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var server = (await GetServerByIdAsync(new(request.User, request.Id))).Server;
+        if(server == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
+
+        _context.Remove(server);
+        await _context.SaveChangesAsync();
+
+        return new(BusinessStatusCodeEnum.Success, "Server deleted successfully.");
     }
 
 
