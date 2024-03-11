@@ -24,7 +24,7 @@ public class ServersService : IServersService
 
     public async Task<ListServersResponse> ListServersAsync(ListServersRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        return new(new List<ServerInstance>(), BusinessStatusCodeEnum.NotImplemented);
     }
 
 
