@@ -1,6 +1,6 @@
 using SkyHawk.Data.Entities;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {
@@ -10,7 +10,7 @@ public partial class UsersServiceTests
         var emptyResponse = await _service.GetUsersAsync(new());
         Assert.Empty(emptyResponse.Users);
 
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 

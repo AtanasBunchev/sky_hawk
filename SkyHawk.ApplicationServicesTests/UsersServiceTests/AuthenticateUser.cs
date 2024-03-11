@@ -2,14 +2,14 @@ using SkyHawk.ApplicationServices.Messaging;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.Data.Entities;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {
     [Fact]
     public async void TestAuthenticateUser_Succeeds()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 
@@ -23,7 +23,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestAuthenticateUser_WrongPassword_Fails()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 
@@ -35,7 +35,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestAuthenticateUser_NotExists_Fails()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
 
         var response = await _service.AuthenticateUserAsync(new(user.Username, user.Password));
         Assert.NotEqual(BusinessStatusCodeEnum.Success, response.StatusCode);

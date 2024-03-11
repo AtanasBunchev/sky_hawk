@@ -4,14 +4,14 @@ using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Entities;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {
     [Fact]
     public async void TestUpdateUser_ValidData_Succeeds()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 
@@ -41,7 +41,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestUpdateUser_InvalidUsername_Fails()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 
@@ -58,7 +58,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestUpdateUser_InvalidPassword_Fails()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 

@@ -15,5 +15,5 @@ public class Snapshot : Entity
     public string Name { get; set; } = null!;
     [MaxLength(1024)]
     public string Description { get; set; } = null!;
-    public DateTime CreateTime { get; set; }
+    public DateTime CreateTime { get; set; } = DateTime.Now;
 }

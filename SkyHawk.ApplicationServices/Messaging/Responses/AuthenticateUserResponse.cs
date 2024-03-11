@@ -5,15 +5,14 @@ public class AuthenticateUserResponse : ResponseBase
     public string? BearerToken { get; set; }
 
     public AuthenticateUserResponse(BusinessStatusCodeEnum statusCode, string messageText)
+        : base(statusCode, messageText)
     {
-        StatusCode = statusCode;
-        MessageText = messageText;
+
     }
 
     public AuthenticateUserResponse(string bearerToken, string messageText)
+        : base(BusinessStatusCodeEnum.Success, messageText)
     {
         BearerToken = bearerToken;
-        StatusCode = BusinessStatusCodeEnum.Success;
-        MessageText = messageText;
     }
 };

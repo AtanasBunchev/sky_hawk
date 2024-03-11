@@ -7,9 +7,21 @@ public class GetUsersResponse : ResponseBase
 {
     public ICollection<User> Users { get; set; }
 
-    public GetUsersResponse(ICollection<User> users, BusinessStatusCodeEnum statusCode = BusinessStatusCodeEnum.Success)
+    public GetUsersResponse(ICollection<User> users)
+        : base(BusinessStatusCodeEnum.Success, "Users list fetched successfully.")
     {
         Users = users;
-        StatusCode = statusCode;
+    }
+
+    public GetUsersResponse(ICollection<User> users, BusinessStatusCodeEnum statusCode)
+        : base(statusCode)
+    {
+        Users = users;
+    }
+
+    public GetUsersResponse(ICollection<User> users, BusinessStatusCodeEnum statusCode, string msg)
+        : base(statusCode, msg)
+    {
+        Users = users;
     }
 };

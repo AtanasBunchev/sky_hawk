@@ -5,7 +5,7 @@ using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.Data.Entities;
 using SkyHawk.DataMock.Contexts;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {
@@ -20,7 +20,7 @@ public partial class UsersServiceTests
         _service = new UsersService(_context, _docker.Object);
     }
 
-    public User GetValidUserEntity()
+    public static User GetValidUserEntity()
     {
         return new (){
             Username = "Name",

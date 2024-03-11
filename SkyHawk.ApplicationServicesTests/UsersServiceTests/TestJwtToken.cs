@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {

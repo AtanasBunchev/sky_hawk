@@ -1,14 +1,14 @@
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.Data.Entities;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {
     [Fact]
     public async void TestGetUserByName()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
 
         var nullResponse = await _service.GetUserByNameAsync(new(user.Username));
         Assert.Null(nullResponse.User);

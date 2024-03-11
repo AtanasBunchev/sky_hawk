@@ -4,14 +4,14 @@ using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Entities;
 
-namespace SkyHawk.ApplicationServicesTests.UsersServiceTests;
+namespace SkyHawk.ApplicationServicesTests;
 
 public partial class UsersServiceTests
 {
     [Fact]
     public async void TestCreateUser_ValidData_Succeeds()
     {
-        var template = this.GetValidUserEntity();
+        var template = GetValidUserEntity();
 
         // Test user creation
         var response = await _service.CreateUserAsync(new(template.Username, template.Password));
@@ -29,7 +29,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestCreateUser_InvalidUsername_Fails()
     {
-        var template = this.GetValidUserEntity();
+        var template = GetValidUserEntity();
 
         // Test too short username
         var response = await _service.CreateUserAsync(new("u", template.Password));
@@ -47,7 +47,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestCreateUser_InvalidPassword_Fails()
     {
-        var template = this.GetValidUserEntity();
+        var template = GetValidUserEntity();
 
         // Test too short password
         var response = await _service.CreateUserAsync(new(template.Username, "p"));
@@ -61,7 +61,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestCreateUser_AlreadyExists_Fails()
     {
-        var user = this.GetValidUserEntity();
+        var user = GetValidUserEntity();
         _context.Users.Add(user);
         _context.SaveChanges();
 
