@@ -22,13 +22,18 @@ public class SnapshotsService : ISnapshotsService
         _docker = docker;
     }
 
-    public async Task<GetSnapshotsResponse> GetSnapshotsAsync(GetSnapshotsRequest request)
+    public async Task<ListSnapshotsResponse> ListSnapshotsAsync(ListSnapshotsRequest request)
     {
         return new(BusinessStatusCodeEnum.NotImplemented);
     }
 
 
-    public async Task<GetSnapshotResponse> GetSnapshotAsync(GetSnapshotRequest request)
+    public async Task<GetSnapshotResponse> GetSnapshotAsync(GetByIdRequest request)
+    {
+        return new(BusinessStatusCodeEnum.NotImplemented);
+    }
+
+    public async Task<GetSnapshotResponse> GetSnapshotAsync(GetByNameRequest request)
     {
         return new(BusinessStatusCodeEnum.NotImplemented);
     }

@@ -6,10 +6,11 @@ namespace SkyHawk.ApplicationServices.Interfaces;
 public interface ISnapshotsService
 {
     // List snapshots
-    public Task<GetSnapshotsResponse> GetSnapshotsAsync(GetSnapshotsRequest request);
+    public Task<ListSnapshotsResponse> ListSnapshotsAsync(ListSnapshotsRequest request);
 
     // Get snapshot
-    public Task<GetSnapshotResponse> GetSnapshotAsync(GetSnapshotRequest request);
+    public Task<GetSnapshotResponse> GetSnapshotAsync(GetByIdRequest request);
+    public Task<GetSnapshotResponse> GetSnapshotAsync(GetByNameRequest request);
 
     // Create snapshot
     public Task<CreateSnapshotResponse> CreateSnapshotAsync(CreateSnapshotRequest request);

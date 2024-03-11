@@ -28,7 +28,7 @@ public class UsersService : IUsersService
     }
 
 
-    public async Task<GetUsersResponse> GetUsersAsync(GetUsersRequest request)
+    public async Task<ListUsersResponse> ListUsersAsync(ListUsersRequest request)
     {
         return new(await _context.Users.ToListAsync());
     }

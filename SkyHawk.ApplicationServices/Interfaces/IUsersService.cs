@@ -6,7 +6,7 @@ namespace SkyHawk.ApplicationServices.Interfaces;
 public interface IUsersService
 {
     // List users
-    public Task<GetUsersResponse> GetUsersAsync(GetUsersRequest request);
+    public Task<ListUsersResponse> ListUsersAsync(ListUsersRequest request);
 
     // Get user
     public Task<GetUserResponse> GetUserByNameAsync(GetByNameRequest request);

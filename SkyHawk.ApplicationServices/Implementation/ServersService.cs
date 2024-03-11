@@ -22,7 +22,7 @@ public class ServersService : IServersService
         _docker = docker;
     }
 
-    public async Task<GetServersResponse> GetServersAsync(GetServersRequest request)
+    public async Task<ListServersResponse> ListServersAsync(ListServersRequest request)
     {
         return new(BusinessStatusCodeEnum.NotImplemented);
     }

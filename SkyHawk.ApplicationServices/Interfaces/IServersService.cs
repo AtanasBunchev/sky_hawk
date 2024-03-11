@@ -6,7 +6,7 @@ namespace SkyHawk.ApplicationServices.Interfaces;
 public interface IServersService
 {
     // List server instances
-    public Task<GetServersResponse> GetServersAsync(GetServersRequest request);
+    public Task<ListServersResponse> ListServersAsync(ListServersRequest request);
 
     // Get server instance
     public Task<GetServerResponse> GetServerByIdAsync(GetByIdRequest request);
