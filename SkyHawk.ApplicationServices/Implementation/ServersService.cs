@@ -81,7 +81,17 @@ public class ServersService : IServersService
 
     public async Task<UpdateServerImageResponse> UpdateServerImageAsync(UpdateServerImageRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var server = (await GetServerByIdAsync(new(request.User, request.ServerId))).Server;
+        if(server == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
+
+        server.Image = new byte[request.Image.Length];
+
+        request.Image.ReadExactly(server.Image, 0, server.Image.Length);
+
+        _context.SaveChanges();
+
+        return new(BusinessStatusCodeEnum.Success);
     }
 
 
