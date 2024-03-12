@@ -76,7 +76,60 @@ public class ServersService : IServersService
 
     public async Task<UpdateServerResponse> UpdateServerAsync(UpdateServerRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var server = (await GetServerByIdAsync(new(request.User, request.ServerId))).Server;
+        if(server == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
+
+        if(request.Name != null) {
+            var maxNameLength = typeof(ServerInstance).GetProperty("Name")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxNameLength != null && request.Name.Length > maxNameLength) {
+                return new(BusinessStatusCodeEnum.InvalidInput,
+                        $"Name must be less than {maxNameLength} symbols long!");
+            }
+
+            server.Name = request.Name;
+        }
+
+        if(request.Description != null) {
+            var maxDescriptionLength = typeof(ServerInstance).GetProperty("Description")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxDescriptionLength != null && request.Description.Length > maxDescriptionLength) {
+                return new(BusinessStatusCodeEnum.InvalidInput,
+                        $"Description must be less than {maxDescriptionLength} symbols long!");
+            }
+
+            server.Description = request.Description;
+        }
+
+        if(request.AutoStart != null)
+            server.AutoStart = request.AutoStart;
+
+        if(request.AutoStop != null)
+            server.AutoStop = request.AutoStop;
+
+        if(request.AutoStart != null && request.AutoStart == request.AutoStop) {
+            server.AutoStart = null;
+            server.AutoStop = null;
+        }
+
+        if(request.Image != null) {
+            var result = await UpdateServerImageAsync(new(request.User, request.ServerId, request.Image));
+            if(result.StatusCode != BusinessStatusCodeEnum.Success)
+                return new(result.StatusCode, result.MessageText);
+        }
+
+        /*
+        if(request.Port != null) {
+            var result = await UpdateServerPortAsync(new(request.User, request.ServerId, request.Port));
+            if(result.StatusCode != BusinessStatusCodeEnum.Success)
+                return new(result.StatusCode, result.MessageText);
+        }
+        */
+
+        await _context.SaveChangesAsync();
+
+        return new(BusinessStatusCodeEnum.Success, "Server updated successfully.");
     }
 
     public async Task<UpdateServerImageResponse> UpdateServerImageAsync(UpdateServerImageRequest request)
