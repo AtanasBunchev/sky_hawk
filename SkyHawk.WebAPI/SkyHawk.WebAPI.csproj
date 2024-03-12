@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SkyHawk.Data\SkyHawk.Data.csproj" />
+    <ProjectReference Include="..\SkyHawk.ApplicationServices\SkyHawk.ApplicationServices.csproj" />
   </ItemGroup>
 
 </Project>
