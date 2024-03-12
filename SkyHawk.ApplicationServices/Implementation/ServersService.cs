@@ -1,4 +1,5 @@
 using Docker.DotNet;
+using Docker.DotNet.Models;
 using Microsoft.EntityFrameworkCore;
 using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging;
@@ -6,6 +7,7 @@ using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Contexts;
 using SkyHawk.Data.Entities;
+using SkyHawk.Data.Server;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Linq;
@@ -64,7 +66,73 @@ public class ServersService : IServersService
 
     public async Task<CreateServerFromImageResponse> CreateServerFromImageAsync(CreateServerFromImageRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var defaults = ServerDefaults.Get(request.Type);
+        if(defaults == null)
+            return new(BusinessStatusCodeEnum.InvalidInput, "Unknown ServerType defaults!");
+
+        if(request.Port <= 1000)
+            return new(BusinessStatusCodeEnum.InvalidInput, "Port must be over 1000!");
+
+        if(request.Name != null) {
+            var maxNameLength = typeof(ServerInstance).GetProperty("Name")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxNameLength != null && request.Name.Length > maxNameLength)
+                return new(BusinessStatusCodeEnum.InvalidInput,
+                        $"Name must be less than {maxNameLength} symbols long!");
+        }
+
+        if(request.Description != null) {
+            var maxDescriptionLength = typeof(ServerInstance).GetProperty("Description")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxDescriptionLength != null && request.Description.Length > maxDescriptionLength)
+                return new(BusinessStatusCodeEnum.InvalidInput,
+                        $"Description must be less than {maxDescriptionLength} symbols long!");
+        }
+
+
+        // Download the image
+        await _docker.Images.CreateImageAsync(
+            new ImagesCreateParameters
+            {
+                FromImage = defaults.Image,
+                Tag = defaults.Tag,
+            },
+            null,
+            new Progress<JSONMessage>());
+
+        string protocol = defaults.Protocol == PortProtocol.UDP ? "udp" : "tcp";
+
+        Dictionary<string, EmptyStruct> exposedPorts = new();
+        exposedPorts.Add($"{request.Port}:{defaults.InternalPort}/{protocol}", default);
+
+        CreateContainerResponse response = await _docker.Containers.CreateContainerAsync(new CreateContainerParameters()
+        {
+            Image = $"{defaults.Image}:{defaults.Tag}",
+            HostConfig = new HostConfig()
+            {
+                DNS = new[] { "9.9.9.9", "8.8.8.8", "8.8.4.4", "1.1.1.1" }
+            },
+            Env = defaults.Env,
+            ExposedPorts = exposedPorts
+        });
+
+        string containerId = response.ID;
+
+        ServerInstance server = new ServerInstance {
+            ContainerId = containerId,
+            Type = request.Type,
+            Port = request.Port,
+
+            Owner = request.User,
+
+            Name = request.Name,
+            Description = request.Description
+        };
+
+        _context.Servers.Add(server);
+        await _context.SaveChangesAsync();
+
+        return new(BusinessStatusCodeEnum.Success);
     }
 
 

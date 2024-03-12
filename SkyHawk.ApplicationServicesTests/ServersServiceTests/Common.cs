@@ -18,7 +18,8 @@ public partial class ServersServiceTests
     public ServersServiceTests()
     {
         _context = new();
-        _docker = new();
+        //_docker = new(MockBehavior.Strict);
+        _docker = new() { DefaultValue = DefaultValue.Mock };
         _service = new ServersService(_context, _docker.Object);
 
         _user = UsersServiceTests.GetValidUserEntity();

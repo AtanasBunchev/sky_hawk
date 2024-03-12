@@ -5,8 +5,9 @@ namespace SkyHawk.Data.Server;
 public enum ServerType
 {
     Unknown = 0,
-    MinetestGame = 16,
-    NodeCore,
-    DDNet = 32
+    MinetestDevTest = 16,
+    //MinetestGame,
+    //NodeCore,
+    //DDNet = 32
 }
 
