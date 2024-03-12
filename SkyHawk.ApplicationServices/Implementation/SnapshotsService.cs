@@ -69,7 +69,35 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<UpdateSnapshotResponse> UpdateSnapshotAsync(UpdateSnapshotRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var snapshot = (await GetSnapshotByIdAsync(new(request.User, request.SnapshotId))).Snapshot;
+        if(snapshot == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found!");
+
+        if(request.Name != null) {
+            var maxNameLength = typeof(Snapshot).GetProperty("Name")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxNameLength != null && request.Name.Length > maxNameLength) {
+                return new(BusinessStatusCodeEnum.InvalidInput,
+                        $"Name must be less than {maxNameLength} symbols long!");
+            }
+
+            snapshot.Name = request.Name;
+        }
+
+        if(request.Description != null) {
+            var maxDescriptionLength = typeof(Snapshot).GetProperty("Description")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxDescriptionLength != null && request.Description.Length > maxDescriptionLength) {
+                return new(BusinessStatusCodeEnum.InvalidInput,
+                        $"Description must be less than {maxDescriptionLength} symbols long!");
+            }
+
+            snapshot.Description = request.Description;
+        }
+
+        await _context.SaveChangesAsync();
+
+        return new(BusinessStatusCodeEnum.Success, "Snapshot updated successfully.");
     }
 
 
