@@ -19,8 +19,8 @@ public interface IServersService
 
     // Modify server instance
     public Task<UpdateServerResponse> UpdateServerAsync(UpdateServerRequest request);
-
     public Task<UpdateServerImageResponse> UpdateServerImageAsync(UpdateServerImageRequest request);
+    // public Task<UpdateServerPortResponse> UpdateServerPortAsync(UpdateServerPortRequest request)
 
     // Delete server instance
     public Task<DeleteServerResponse> DeleteServerAsync(DeleteServerRequest request);

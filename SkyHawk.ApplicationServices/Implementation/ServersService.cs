@@ -94,6 +94,14 @@ public class ServersService : IServersService
         return new(BusinessStatusCodeEnum.Success);
     }
 
+    /*
+    public async Task<UpdateServerPortResponse> UpdateServerPortAsync(UpdateServerPortRequest request)
+    {
+        // TODO store a container as image, destroy it, recreate it, start it, remove the image
+        return new(BusinessStatusCodeEnum.NotImplemented);
+    }
+    */
+
 
     public async Task<DeleteServerResponse> DeleteServerAsync(DeleteServerRequest request)
     {
