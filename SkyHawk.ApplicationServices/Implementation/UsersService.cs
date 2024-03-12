@@ -1,3 +1,4 @@
+using AutoMapper;
 using Docker.DotNet;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -5,6 +6,7 @@ using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging;
 using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
+using SkyHawk.ApplicationServices.Messaging.ViewModels;
 using SkyHawk.Data.Contexts;
 using SkyHawk.Data.Entities;
 using System.ComponentModel.DataAnnotations;
@@ -20,28 +22,36 @@ public class UsersService : IUsersService
 {
     SkyHawkDbContext _context;
     IDockerClient _docker;
+    IMapper _mapper;
 
     public UsersService(SkyHawkDbContext context, IDockerClient docker)
     {
         _context = context;
         _docker = docker;
+        _mapper = new MapperConfiguration(cfg => cfg.CreateMap<User, UserVM>()).CreateMapper();
     }
 
 
     public async Task<ListUsersResponse> ListUsersAsync(ListUsersRequest request)
     {
-        return new(await _context.Users.ToListAsync());
+        return new(await _context.Users.Select(x => _mapper.Map<UserVM>(x)).ToListAsync());
     }
 
 
     public async Task<GetUserResponse> GetUserByNameAsync(GetUserByNameRequest request)
     {
-        return new(await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Name));
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Name);
+        if(user == null)
+            return new(null);
+        return new(_mapper.Map<UserVM>(user));
     }
 
     public async Task<GetUserResponse> GetUserByIdAsync(GetUserByIdRequest request)
     {
-        return new(await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id));
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id);
+        if(user == null)
+            return new(null);
+        return new (_mapper.Map<UserVM>(user));
     }
 
 
@@ -94,7 +104,7 @@ public class UsersService : IUsersService
 
     public async Task<UpdateUserResponse> UpdateUserAsync(UpdateUserRequest request)
     {
-        var user = (await GetUserByIdAsync(new(request.Id))).User;
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id);
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
 
@@ -143,7 +153,7 @@ public class UsersService : IUsersService
 
     public async Task<DeleteUserResponse> DeleteUserAsync(DeleteUserRequest request)
     {
-        var user = (await GetUserByIdAsync(new(request.Id))).User;
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id);
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
 
@@ -156,7 +166,7 @@ public class UsersService : IUsersService
 
     public async Task<AuthenticateUserResponse> AuthenticateUserAsync(AuthenticateUserRequest request)
     {
-        User? user = (await GetUserByNameAsync(new(request.Username))).User;
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Username == request.Username);
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
 
@@ -171,7 +181,7 @@ public class UsersService : IUsersService
 
     public async Task<GenerateJwtTokenResponse> GenerateJwtTokenAsync(GetUserByIdRequest request)
     {
-        User? user = (await GetUserByIdAsync(new(request.Id))).User;
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.Id);
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
 

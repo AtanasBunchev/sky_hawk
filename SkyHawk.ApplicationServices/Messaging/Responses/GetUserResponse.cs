@@ -1,12 +1,13 @@
 using SkyHawk.Data.Entities;
+using SkyHawk.ApplicationServices.Messaging.ViewModels;
 
 namespace SkyHawk.ApplicationServices.Messaging.Responses;
 
 public class GetUserResponse : ResponseBase
 {
-    public User? User { get; set; }
+    public UserVM? User { get; set; }
 
-    public GetUserResponse(User? user)
+    public GetUserResponse(UserVM? user)
         : base(BusinessStatusCodeEnum.None)
     {
         User = user;

@@ -18,6 +18,11 @@ public partial class UsersServiceTests
 
         var response = await _service.GetUserByIdAsync(new(user.Id));
 
-        Assert.Equal(user, response.User);
+        Assert.Equal(user.Id, response.User.Id);
+        Assert.Equal(user.Username, response.User.Username);
+        Assert.Equal(user.CreateTime, response.User.CreateTime);
+        Assert.Equal(user.MaxServers, response.User.MaxServers);
+        Assert.Equal(user.MaxRunningServers, response.User.MaxRunningServers);
+        Assert.Equal(user.CanMakeSnapshots, response.User.CanMakeSnapshots);
     }
 }

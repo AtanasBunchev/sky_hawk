@@ -12,4 +12,11 @@ public class UpdateUserRequest
     public int? MaxRunningServers { get; set; } = null;
     public bool? CanMakeSnapshotsServers { get; set; } = null;
 */
+
+    public UpdateUserRequest(int id, string? username = null, string? password = null)
+    {
+        Id = id;
+        Username = username;
+        Password = password;
+    }
 };

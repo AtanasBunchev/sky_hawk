@@ -18,7 +18,13 @@ public partial class UsersServiceTests
 
         Assert.NotEmpty(response.Users);
         Assert.Single(response.Users);
-        foreach(var returnedUser in response.Users)
-            Assert.Equal(user, returnedUser);
+        foreach(var returnedUser in response.Users) {
+            Assert.Equal(user.Id, returnedUser.Id);
+            Assert.Equal(user.Username, returnedUser.Username);
+            Assert.Equal(user.CreateTime, returnedUser.CreateTime);
+            Assert.Equal(user.MaxServers, returnedUser.MaxServers);
+            Assert.Equal(user.MaxRunningServers, returnedUser.MaxRunningServers);
+            Assert.Equal(user.CanMakeSnapshots, returnedUser.CanMakeSnapshots);
+        }
     }
 }

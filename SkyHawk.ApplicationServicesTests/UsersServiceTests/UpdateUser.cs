@@ -19,7 +19,7 @@ public partial class UsersServiceTests
             var targetName = user.Username;
             var targetPass = user.Password;
 
-            UpdateUserRequest request = new () { Id = user.Id };
+            UpdateUserRequest request = new (user.Id);
 
             if((i & 1) == 1) {
                 request.Username = targetName + "u";
@@ -48,7 +48,7 @@ public partial class UsersServiceTests
         var invalidName = "u"; // Too Short
         var originalName = user.Username;
 
-        UpdateUserRequest request = new () { Id = user.Id, Username = invalidName };
+        UpdateUserRequest request = new (user.Id) { Username = invalidName };
         var response = await _service.UpdateUserAsync(request);
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
 
@@ -65,7 +65,7 @@ public partial class UsersServiceTests
         var invalidPass = "p"; // Too Short
         var originalPass = user.Password;
 
-        UpdateUserRequest request = new () { Id = user.Id, Password = invalidPass };
+        UpdateUserRequest request = new (user.Id) { Password = invalidPass };
         var response = await _service.UpdateUserAsync(request);
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
 
@@ -75,7 +75,7 @@ public partial class UsersServiceTests
     [Fact]
     public async void TestUpdateUser_NotExists_Fails()
     {
-        UpdateUserRequest request = new () { Id = 10 };
+        UpdateUserRequest request = new (10);
         var response = await _service.UpdateUserAsync(request);
         Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
     }
