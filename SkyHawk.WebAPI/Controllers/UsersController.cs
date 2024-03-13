@@ -75,13 +75,17 @@ public class UserController : ControllerBase
             return BadRequest(response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut]
+    [HttpPatch]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<UpdateUserResponse>> UpdateUserAsync(int id, [FromBody] UsernamePasswordTuple tuple)
+    public async Task<ActionResult<UpdateUserResponse>> UpdateUserAsync([FromBody] UsernamePasswordTuple tuple)
     {
+        var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
+        if (!int.TryParse(claim?.Value, out int id))
+            return BadRequest(new UpdateUserResponse(BusinessStatusCodeEnum.InvalidInput, "Invalid Id"));
+
         var response = await _service.UpdateUserAsync(new(id, tuple.Username, tuple.Password));
         if(response.StatusCode == BusinessStatusCodeEnum.Success)
             return Ok(response);
@@ -91,13 +95,16 @@ public class UserController : ControllerBase
             return BadRequest(response);
     }
 
-    [HttpPatch("{id}/username/{username}")]
+    [HttpPut("username")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<UpdateUserResponse>> PatchUserNameAsync(int id, string username)
+    public async Task<ActionResult<UpdateUserResponse>> PatchUserNameAsync([FromBody] string username)
     {
+        var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
+        if (!int.TryParse(claim?.Value, out int id))
+            return BadRequest(new UpdateUserResponse(BusinessStatusCodeEnum.InvalidInput, "Invalid Id"));
+
         var response = await _service.UpdateUserAsync(new(id) { Username = username });
         if(response.StatusCode == BusinessStatusCodeEnum.Success)
             return Ok(response);
@@ -107,13 +114,16 @@ public class UserController : ControllerBase
             return BadRequest(response);
     }
 
-    [HttpPatch("{id}/password/{password}")]
+    [HttpPut("password")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<UpdateUserResponse>> PatchUserPasswordAsync(int id, string password)
+    public async Task<ActionResult<UpdateUserResponse>> PatchUserPasswordAsync([FromBody] string password)
     {
+        var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
+        if (!int.TryParse(claim?.Value, out int id))
+            return BadRequest(new UpdateUserResponse(BusinessStatusCodeEnum.InvalidInput, "Invalid Id"));
+
         var response = await _service.UpdateUserAsync(new(id) { Password = password });
         if(response.StatusCode == BusinessStatusCodeEnum.Success)
             return Ok(response);
@@ -123,14 +133,17 @@ public class UserController : ControllerBase
             return BadRequest(response);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<DeleteUserResponse>> DeleteUserAsync(int id)
+    public async Task<ActionResult<DeleteUserResponse>> DeleteUserAsync()
     {
+        var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
+        if (!int.TryParse(claim?.Value, out int id))
+            return BadRequest(new UpdateUserResponse(BusinessStatusCodeEnum.InvalidInput, "Invalid Id"));
+
         var response = await _service.UpdateUserAsync(new(id));
         if(response.StatusCode == BusinessStatusCodeEnum.Success)
             return Ok(response);
