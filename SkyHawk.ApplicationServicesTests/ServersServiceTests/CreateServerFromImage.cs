@@ -12,49 +12,20 @@ public partial class ServersServiceTests
 {
     private void TestCreateServerFromImage_SetupDockerMock(CreateServerFromImageRequest request)
     {
-        /*
-         * I did my best and spent 2+ hours trying to get this to work.
-         * I couldn't get the Strict mode to run with Docker.DotNet.
-         *
-         * Currently sufficed with a recursive mock.
-         * I'll most likely not be mocking the docker lib much more than that.
-         *
-        var defaults = ServerDefaults.Get(request.Type);
-
         _docker.Setup(x => x.Images.CreateImageAsync(
-            It.IsAny<ImagesCreateParameters>(),
-            null,
-            It.IsAny<Progress<JSONMessage>>(),
-            It.IsAny<CancellationToken>()
-        ));
+                It.IsAny<ImagesCreateParameters>(),
+                It.IsAny<AuthConfig>(),
+                It.IsAny<IProgress<JSONMessage>>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).Returns(Task.FromResult(default(object))); // https://stackoverflow.com/questions/21253523/
 
-        Dictionary<string, EmptyStruct> exposedPorts = new();
-        string protocol = defaults.Protocol == PortProtocol.UDP ? "udp" : "tcp";
-        exposedPorts.Add($"{request.Port}:{defaults.InternalPort}/{protocol}", default);
-
-        _docker.Setup(x => x.Containers.CreateContainerAsync(
-            new CreateContainerParameters()
-            {
-                Image = $"{defaults.Image}:{defaults.Tag}",
-                HostConfig = It.IsAny<HostConfig>(),
-                Env = defaults.Env,
-                //ExposedPorts = exposedPorts
-                ExposedPorts = It.IsAny<IDictionary<string, EmptyStruct>>()
-            },
-            It.IsAny<CancellationToken>()
-        )).ReturnsAsync(new CreateContainerResponse() {
-            ID = new String('0', 64),
-            Warnings = new List<string>()
-        });
-        //)).ReturnsAsync(new CreateContainerResponse()).SetupProperty(x => x.ID).Returns(new String('0', 64));
-        */
-
-        CreateContainerResponse result = new() { ID = new String('0', 64)};
+        CreateContainerResponse createResult = new() { ID = new String('0', 64)};
         _docker.Setup(x => x.Containers.CreateContainerAsync(
                 It.IsAny<CreateContainerParameters>(),
                 It.IsAny<CancellationToken>()
             )
-        ).ReturnsAsync(result);
+        ).ReturnsAsync(createResult);
     }
 
     [Fact]
