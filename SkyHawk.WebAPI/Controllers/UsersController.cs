@@ -36,7 +36,7 @@ public class UserController : ControllerBase
     [HttpGet]
     [HttpGet("list")]
     [ProducesResponseType(typeof(ListUsersResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ListUsersResponse>> GetUsers()
+    public async Task<ActionResult<ListUsersResponse>> ListUsers()
     {
         return Ok(await _service.ListUsersAsync(new()));
     }

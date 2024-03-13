@@ -6,7 +6,7 @@ public class GetSnapshotByNameRequest : SnapshotRequestBase
 {
     public string Name { get; set; }
 
-    public GetSnapshotByNameRequest(User user, string name) : base(user)
+    public GetSnapshotByNameRequest(int userId, string name) : base(userId)
     {
         Name = name;
     }

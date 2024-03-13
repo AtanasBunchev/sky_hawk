@@ -17,6 +17,8 @@ public partial class UsersServiceTests
         _context.SaveChanges();
 
         var response = await _service.GetUserByNameAsync(new(user.Username));
+        Assert.NotNull(response.User);
+
         Assert.Equal(user.Id, response.User.Id);
         Assert.Equal(user.Username, response.User.Username);
         Assert.Equal(user.CreateTime, response.User.CreateTime);

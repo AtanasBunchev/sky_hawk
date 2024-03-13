@@ -8,7 +8,7 @@ public class UpdateSnapshotRequest : SnapshotRequestBase
     public string? Name { get; set; }
     public string? Description { get; set; }
 
-    public UpdateSnapshotRequest(User user, int snapshotId) : base(user)
+    public UpdateSnapshotRequest(int userId, int snapshotId) : base(userId)
     {
         SnapshotId = snapshotId;
     }

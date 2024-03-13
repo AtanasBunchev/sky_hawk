@@ -13,7 +13,8 @@ public partial class SnapshotsServiceTests
     private Mock<IDockerClient> _docker;
     private ISnapshotsService _service;
 
-    private User _user;
+    private int _user;
+    private User _userObject;
 
     public SnapshotsServiceTests()
     {
@@ -21,16 +22,17 @@ public partial class SnapshotsServiceTests
         _docker = new();
         _service = new SnapshotsService(_context, _docker.Object);
 
-        _user = UsersServiceTests.GetValidUserEntity();
-        _context.Add(_user);
+        _userObject = UsersServiceTests.GetValidUserEntity();
+        _context.Add(_userObject);
         _context.SaveChanges();
+        _user = _userObject.Id;
     }
 
     public Snapshot GetValidSnapshotEntity()
     {
         return new (){
             ImageId = new String('0', 64),
-            Owner = _user,
+            Owner = _userObject,
             Name = "My Snapshot",
             Description = "I has a snapshot :D"
         };

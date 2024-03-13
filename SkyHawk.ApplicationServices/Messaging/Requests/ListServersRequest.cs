@@ -4,7 +4,7 @@ namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
 public class ListServersRequest : ServerRequestBase
 {
-    public ListServersRequest(User user) : base(user)
+    public ListServersRequest(int userId) : base(userId)
     {
         
     }

@@ -8,7 +8,7 @@ public class UpdateServerImageRequest : ServerRequestBase
     public int ServerId { get; set; }
     public Stream Image { get; set; }
 
-    public UpdateServerImageRequest(User user, int serverId, Stream image) : base(user)
+    public UpdateServerImageRequest(int userId, int serverId, Stream image) : base(userId)
     {
         ServerId = serverId;
         Image = image;

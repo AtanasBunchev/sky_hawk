@@ -13,7 +13,8 @@ public partial class ServersServiceTests
     private Mock<IDockerClient> _docker;
     private IServersService _service;
 
-    private User _user;
+    private int _user;
+    private User _userObject;
 
     public ServersServiceTests()
     {
@@ -22,16 +23,17 @@ public partial class ServersServiceTests
         _docker = new() { DefaultValue = DefaultValue.Mock };
         _service = new ServersService(_context, _docker.Object);
 
-        _user = UsersServiceTests.GetValidUserEntity();
-        _context.Add(_user);
+        _userObject = UsersServiceTests.GetValidUserEntity();
+        _context.Add(_userObject);
         _context.SaveChanges();
+        _user = _userObject.Id;
     }
 
     public ServerInstance GetValidServerEntity()
     {
         return new (){
             ContainerId = new String('0', 64),
-            Owner = _user,
+            Owner = _userObject,
             Name = "My Server",
             Description = "I has a game server :D"
         };

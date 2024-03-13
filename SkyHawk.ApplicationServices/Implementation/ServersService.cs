@@ -31,7 +31,7 @@ public class ServersService : IServersService
             .Include(c => c.Owner)
             .Load();
 
-        return new(await _context.Servers.Where(x => x.Owner.Id == request.User.Id).ToListAsync());
+        return new(await _context.Servers.Where(x => x.Owner.Id == request.UserId).ToListAsync());
     }
 
 
@@ -44,7 +44,7 @@ public class ServersService : IServersService
         return new(
             await _context.Servers
                 .SingleOrDefaultAsync(x => 
-                    x.Owner.Id == request.User.Id &&
+                    x.Owner.Id == request.UserId &&
                     x.Id == request.Id)
         );
     }
@@ -58,7 +58,7 @@ public class ServersService : IServersService
         return new(
             await _context.Servers
                 .SingleOrDefaultAsync(x => 
-                    x.Owner.Id == request.User.Id &&
+                    x.Owner.Id == request.UserId &&
                     x.Name == request.Name)
         );
     }
@@ -123,7 +123,7 @@ public class ServersService : IServersService
             Type = request.Type,
             Port = request.Port,
 
-            Owner = request.User,
+            Owner = _context.Users.SingleOrDefault(x => x.Id == request.UserId),
 
             Name = request.Name,
             Description = request.Description
@@ -144,7 +144,7 @@ public class ServersService : IServersService
 
     public async Task<UpdateServerResponse> UpdateServerAsync(UpdateServerRequest request)
     {
-        var server = (await GetServerByIdAsync(new(request.User, request.ServerId))).Server;
+        var server = (await GetServerByIdAsync(new(request.UserId, request.ServerId))).Server;
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 
@@ -182,14 +182,14 @@ public class ServersService : IServersService
         }
 
         if(request.Image != null) {
-            var result = await UpdateServerImageAsync(new(request.User, request.ServerId, request.Image));
+            var result = await UpdateServerImageAsync(new(request.UserId, request.ServerId, request.Image));
             if(result.StatusCode != BusinessStatusCodeEnum.Success)
                 return new(result.StatusCode, result.MessageText);
         }
 
         /*
         if(request.Port != null) {
-            var result = await UpdateServerPortAsync(new(request.User, request.ServerId, request.Port));
+            var result = await UpdateServerPortAsync(new(request.UserId, request.ServerId, request.Port));
             if(result.StatusCode != BusinessStatusCodeEnum.Success)
                 return new(result.StatusCode, result.MessageText);
         }
@@ -202,7 +202,7 @@ public class ServersService : IServersService
 
     public async Task<UpdateServerImageResponse> UpdateServerImageAsync(UpdateServerImageRequest request)
     {
-        var server = (await GetServerByIdAsync(new(request.User, request.ServerId))).Server;
+        var server = (await GetServerByIdAsync(new(request.UserId, request.ServerId))).Server;
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 
@@ -226,7 +226,7 @@ public class ServersService : IServersService
 
     public async Task<DeleteServerResponse> DeleteServerAsync(DeleteServerRequest request)
     {
-        var server = (await GetServerByIdAsync(new(request.User, request.Id))).Server;
+        var server = (await GetServerByIdAsync(new(request.UserId, request.Id))).Server;
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 

@@ -16,7 +16,7 @@ public class UpdateServerRequest : ServerRequestBase
     public TimeOnly? AutoStart { get; set; }
     public TimeOnly? AutoStop { get; set; }
 
-    public UpdateServerRequest(User user, int serverId) : base(user)
+    public UpdateServerRequest(int userId, int serverId) : base(userId)
     {
         ServerId = serverId;
     }

@@ -4,7 +4,7 @@ namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
 public class CreateServerFromSnapshotRequest : ServerRequestBase
 {
-    public CreateServerFromSnapshotRequest(User user) : base(user)
+    public CreateServerFromSnapshotRequest(int userId) : base(userId)
     {
         
     }

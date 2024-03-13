@@ -1,13 +1,11 @@
-using SkyHawk.Data.Entities;
-
 namespace SkyHawk.ApplicationServices.Messaging;
 
 public abstract class ServerRequestBase
 {
-    public User User { get; set; }
+    public int UserId { get; set; }
 
-    public ServerRequestBase(User user)
+    public ServerRequestBase(int userId)
     {
-        User = user;
+        UserId = userId;
     }
 };

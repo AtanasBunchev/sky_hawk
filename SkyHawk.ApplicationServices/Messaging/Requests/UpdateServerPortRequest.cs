@@ -8,7 +8,7 @@ public class UpdateServerPortRequest : ServerRequestBase
     public int ServerId { get; set; }
     public int Port { get; set; }
 
-    public UpdateServerPortRequest(User user, int serverId, int port) : base(user)
+    public UpdateServerPortRequest(int userId, int serverId, int port) : base(userId)
     {
         ServerId = serverId;
         Port = port;

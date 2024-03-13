@@ -21,7 +21,7 @@ public static class ServerDefaults
         public PortProtocol Protocol;
         public int InternalPort;
 
-        public List<String> Env;
+        public List<String> Env = null!;
     }
 
     private static List<ServerDefaultsBundle> _defaults = new List<ServerDefaultsBundle>(){

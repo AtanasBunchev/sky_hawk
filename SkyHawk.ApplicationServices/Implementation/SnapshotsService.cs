@@ -28,7 +28,7 @@ public class SnapshotsService : ISnapshotsService
             .Include(c => c.Owner)
             .Load();
 
-        return new(await _context.Snapshots.Where(x => x.Owner.Id == request.User.Id).ToListAsync());
+        return new(await _context.Snapshots.Where(x => x.Owner.Id == request.UserId).ToListAsync());
     }
 
 
@@ -41,7 +41,7 @@ public class SnapshotsService : ISnapshotsService
         return new(
             await _context.Snapshots
                 .SingleOrDefaultAsync(x => 
-                    x.Owner.Id == request.User.Id &&
+                    x.Owner.Id == request.UserId &&
                     x.Id == request.Id)
         );
     }
@@ -55,7 +55,7 @@ public class SnapshotsService : ISnapshotsService
         return new(
             await _context.Snapshots
                 .SingleOrDefaultAsync(x => 
-                    x.Owner.Id == request.User.Id &&
+                    x.Owner.Id == request.UserId &&
                     x.Name == request.Name)
         );
     }
@@ -69,7 +69,7 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<UpdateSnapshotResponse> UpdateSnapshotAsync(UpdateSnapshotRequest request)
     {
-        var snapshot = (await GetSnapshotByIdAsync(new(request.User, request.SnapshotId))).Snapshot;
+        var snapshot = (await GetSnapshotByIdAsync(new(request.UserId, request.SnapshotId))).Snapshot;
         if(snapshot == null)
             return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found!");
 
@@ -103,7 +103,7 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<DeleteSnapshotResponse> DeleteSnapshotAsync(DeleteSnapshotRequest request)
     {
-        var snapshot = (await GetSnapshotByIdAsync(new(request.User, request.Id))).Snapshot;
+        var snapshot = (await GetSnapshotByIdAsync(new(request.UserId, request.Id))).Snapshot;
         if(snapshot == null)
             return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found!");
 

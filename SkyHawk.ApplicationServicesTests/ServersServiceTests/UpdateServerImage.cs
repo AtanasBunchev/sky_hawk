@@ -21,8 +21,9 @@ public partial class ServersServiceTests
 
         var response = await _service.UpdateServerImageAsync(new(_user, server.Id, input));
         Assert.Equal(BusinessStatusCodeEnum.Success, response.StatusCode);
-        
-        server = await _context.Servers.SingleOrDefaultAsync(x => x.Id == server.Id);
+
+        Assert.Equal(server, await _context.Servers.SingleOrDefaultAsync(x => x.Id == server.Id));
+        Assert.NotNull(server.Image);
         Assert.Equal(100, server.Image.Length);
         for(int i = 0; i < 100; i++) {
             if((i * 41 + 13) % 97 != server.Image[i]) {
@@ -31,6 +32,7 @@ public partial class ServersServiceTests
         }
     }
 
+    [Fact]
     public async void UpdateServerImage_NotFound_Fails()
     {
         MemoryStream input = new (100);

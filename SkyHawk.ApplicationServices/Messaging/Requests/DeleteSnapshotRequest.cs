@@ -6,7 +6,7 @@ public class DeleteSnapshotRequest : SnapshotRequestBase
 {
     public int Id { get; set; }
 
-    public DeleteSnapshotRequest(User user, int id) : base(user)
+    public DeleteSnapshotRequest(int userId, int id) : base(userId)
     {
         Id = id;
     }

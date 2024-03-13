@@ -4,7 +4,7 @@ namespace SkyHawk.ApplicationServices.Messaging.Requests;
 
 public class ControlServerRequest : ServerRequestBase
 {
-    public ControlServerRequest(User user) : base(user)
+    public ControlServerRequest(int userId) : base(userId)
     {
         
     }

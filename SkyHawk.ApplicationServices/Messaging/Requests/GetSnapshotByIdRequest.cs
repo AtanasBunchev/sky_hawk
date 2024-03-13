@@ -6,7 +6,7 @@ public class GetSnapshotByIdRequest : SnapshotRequestBase
 {
     public int Id { get; set; }
 
-    public GetSnapshotByIdRequest(User user, int id) : base(user)
+    public GetSnapshotByIdRequest(int userId, int id) : base(userId)
     {
         Id = id;
     }

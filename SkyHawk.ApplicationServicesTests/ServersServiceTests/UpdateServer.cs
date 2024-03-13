@@ -55,6 +55,7 @@ public partial class ServersServiceTests
                 Assert.Equal(request.AutoStop, server.AutoStop);
 
             if(request.Image != null) {
+                Assert.NotNull(server.Image);
                 request.Image.Position = 0;
                 for(int j = 0; j < server.Image.Length; j++)
                     Assert.Equal(request.Image.ReadByte(), server.Image[j]);

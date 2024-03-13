@@ -6,7 +6,7 @@ public class GetServerByNameRequest : ServerRequestBase
 {
     public string Name { get; set; }
 
-    public GetServerByNameRequest(User user, string name) : base(user)
+    public GetServerByNameRequest(int userId, string name) : base(userId)
     {
         Name = name;
     }

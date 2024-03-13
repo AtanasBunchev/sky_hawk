@@ -6,7 +6,7 @@ public class DeleteServerRequest : ServerRequestBase
 {
     public int Id { get; set; }
 
-    public DeleteServerRequest(User user, int id) : base(user)
+    public DeleteServerRequest(int userId, int id) : base(userId)
     {
         Id = id;
     }

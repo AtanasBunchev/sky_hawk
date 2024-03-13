@@ -75,8 +75,8 @@ public partial class ServersServiceTests
         var response = await _service.CreateServerFromImageAsync(request);
         Assert.Equal(BusinessStatusCodeEnum.Success, response.StatusCode);
 
-        Assert.Single(_context.Servers);
-        var server = _context.Servers.ToList().FirstOrDefault();
+        var server = _context.Servers.FirstOrDefault();
+        Assert.NotNull(server);
 
         Assert.Equal(type, server.Type);
         Assert.Equal(port, server.Port);

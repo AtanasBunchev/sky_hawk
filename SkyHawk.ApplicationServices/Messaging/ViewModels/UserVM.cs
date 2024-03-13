@@ -1,5 +1,7 @@
 namespace SkyHawk.ApplicationServices.Messaging.ViewModels;
 
+#nullable disable
+
 public class UserVM
 {
     public int Id { get; set; }
