@@ -1,19 +1,23 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using SkyHawk.ApplicationServices.Interfaces;
+using SkyHawk.ApplicationServices.Messaging;
+using SkyHawk.ApplicationServices.Messaging.Requests;
+using SkyHawk.ApplicationServices.Messaging.Responses;
+using SkyHawk.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SkyHawk.Data.Entities;
-using SkyHawk.ApplicationServices.Messaging;
-using SkyHawk.ApplicationServices.Messaging.Requests;
-using SkyHawk.ApplicationServices.Messaging.Responses;
-using SkyHawk.ApplicationServices.Interfaces;
+using System.Net.Http.Headers;
 
 namespace SkyHawk.WebAPI.Controllers;
 
 [Route("users")]
 [ApiController]
+[Produces("application/json")]
 public class UserController : ControllerBase
 {
     private IUsersService _service;
@@ -48,7 +52,7 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{name}")]
+    [HttpGet("username/{name}")]
     [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<User>> GetUserByNameAsync(string name)
@@ -72,8 +76,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<UpdateUserResponse>> UpdateUserAsync(int id, [FromBody] UsernamePasswordTuple tuple)
     {
         var response = await _service.UpdateUserAsync(new(id, tuple.Username, tuple.Password));
@@ -86,8 +92,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch("{id}/username/{username}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<UpdateUserResponse>> PatchUserNameAsync(int id, string username)
     {
         var response = await _service.UpdateUserAsync(new(id) { Username = username });
@@ -100,8 +108,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPatch("{id}/password/{password}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<UpdateUserResponse>> PatchUserPasswordAsync(int id, string password)
     {
         var response = await _service.UpdateUserAsync(new(id) { Password = password });
@@ -114,9 +124,11 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(UpdateUserResponse), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<DeleteUserResponse>> DeleteUserAsync(int id)
     {
         var response = await _service.UpdateUserAsync(new(id));
@@ -127,4 +139,24 @@ public class UserController : ControllerBase
 
         return BadRequest(response);
     }
+
+
+    [HttpPost("login")]
+    [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(DeleteUserResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<AuthenticateUserResponse>> AuthenticateUserAsync([FromBody] AuthenticateUserRequest request)
+    {
+        var result = await _service.AuthenticateUserAsync(request);
+        if(result.StatusCode == BusinessStatusCodeEnum.NotFound)
+            return NotFound(result);
+
+        if(result.StatusCode != BusinessStatusCodeEnum.Success)
+            return BadRequest(result);
+
+        var header = new AuthenticationHeaderValue("Bearer", result.BearerToken);
+        Response.Headers.Authorization = header.ToString();
+        return Ok(result);
+    }
+
 }

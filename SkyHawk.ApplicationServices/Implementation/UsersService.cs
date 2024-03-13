@@ -205,7 +205,7 @@ public class UsersService : IUsersService
         var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            "SkyHawk", // issue
+            "SkyHawk", // issuer
             "SkyHawk", // audience
             claims,
             expires: DateTime.UtcNow.AddMinutes(90),
