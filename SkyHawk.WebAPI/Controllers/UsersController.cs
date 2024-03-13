@@ -55,7 +55,7 @@ public class UserController : ControllerBase
     [HttpGet("username/{name}")]
     [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(GetUserResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<User>> GetUserByNameAsync(string name)
+    public async Task<ActionResult<GetUserResponse>> GetUserByNameAsync(string name)
     {
         var response = await _service.GetUserByNameAsync(new(name));
         if(response.User == null)
