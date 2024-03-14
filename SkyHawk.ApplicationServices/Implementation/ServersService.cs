@@ -71,9 +71,11 @@ public class ServersService : IServersService
         if(errorMessage != null || data == null) // Cover a false warning
             return new(BusinessStatusCodeEnum.InvalidInput, errorMessage);
 
-        var user = _context.Users.SingleOrDefault(x => x.Id == request.UserId);
+        var user = _context.Users.Include(x => x.Servers).SingleOrDefault(x => x.Id == request.UserId);
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+        if(user.Servers.Count() >= user.MaxServers)
+            return new(BusinessStatusCodeEnum.PermittedLimitReached, "Allowed server slots are used up!");
 
         string image = await CreateServer_DownloadDockerImageAsync(data.Image, data.Tag);
         string containerId = await CreateServer_CreateContainerAsync(request.Type, image, request.Port);
@@ -105,9 +107,11 @@ public class ServersService : IServersService
         if(errorMessage != null)
             return new(BusinessStatusCodeEnum.InvalidInput, errorMessage);
 
-        var user = _context.Users.SingleOrDefault(x => x.Id == request.UserId);
+        var user = _context.Users.Include(x => x.Servers).SingleOrDefault(x => x.Id == request.UserId);
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+        if(user.Servers.Count() >= user.MaxServers)
+            return new(BusinessStatusCodeEnum.PermittedLimitReached, "Allowed server slots are used up!");
 
         var data = ServerDefaults.Get(snapshot.Type);
         string containerId = await CreateServer_CreateContainerAsync(snapshot.Type, snapshot.ImageId, request.Port);
