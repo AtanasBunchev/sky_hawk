@@ -21,7 +21,7 @@ public partial class ServersServiceTests : IDisposable
                     It.IsAny<CancellationToken>()
                 ))
             .Returns(Task.FromResult(default(object)))
-            .Verifiable(); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
+            .Verifiable();
     }
 
 
@@ -43,5 +43,22 @@ public partial class ServersServiceTests : IDisposable
 
         response = await _service.DeleteServerAsync(new(_user, id));
         Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
+    }
+
+
+    [Fact]
+    public async void TestDeleteSnapshot_OtherOwner_Fails()
+    {
+        var server = GetValidServerEntity();
+        var stranger = UsersServiceTests.GetValidUserEntity();
+        _context.Add(server);
+        _context.Add(stranger);
+        _context.SaveChanges();
+
+        DeleteServerRequest request = new (stranger.Id, server.Id);
+        var response = await _service.DeleteServerAsync(request);
+        Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
+
+        Assert.Single(_context.Servers.ToList());
     }
 }
