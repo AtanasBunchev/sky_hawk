@@ -10,22 +10,22 @@ namespace SkyHawk.ApplicationServicesTests;
 
 public partial class ServersServiceTests
 {
-    private void TestCreateServerFromImage_SetupDockerMock(CreateServerFromImageRequest request)
+    private void TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot)
     {
-        var data = ServerDefaults.Get(request.Type);
+        snapshot = new Snapshot{
+            ImageId = new String('0', 64),
+            Type = ServerType.MinetestDevTest,
+            Owner = _userObject,
+            Name = "Stored snapshot",
+            Description = "Description"
+        };
+        _context.Snapshots.Add(snapshot);
+        _context.SaveChanges();
+    }
 
-        _docker.Setup(x => x.Images.CreateImageAsync(
-                It.IsAny<ImagesCreateParameters>(),
-                It.IsAny<AuthConfig>(),
-                It.IsAny<IProgress<JSONMessage>>(),
-                It.IsAny<CancellationToken>()
-            ))
-            .Callback<ImagesCreateParameters, AuthConfig, IProgress<JSONMessage>, CancellationToken>
-                ((p, _, _, _) => {
-                    Assert.Equal(data.Image, p?.FromImage);
-                    Assert.Equal(data.Tag, p.Tag);
-                })
-            .Returns(Task.FromResult(default(object))); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
+    private void TestCreateServerFromSnapshot_SetupDockerMock(CreateServerFromSnapshotRequest request, Snapshot snapshot)
+    {
+        var data = ServerDefaults.Get(snapshot.Type);
 
         CreateContainerResponse createResult = new() { ID = new String('0', 64) };
         _docker.Setup(
@@ -35,7 +35,7 @@ public partial class ServersServiceTests
                 ))
             .Callback<CreateContainerParameters, CancellationToken>
                 ((p, _) => {
-                    Assert.Equal($"{data.Image}:{data.Tag}", p?.Image);
+                    Assert.Equal($"{snapshot.ImageId}", p.Image);
                     Assert.Equal(data.Env, p.Env);
                     string protocol = data.Protocol == PortProtocol.UDP ? "udp" : "tcp";
                     Assert.Equal($"{request.Port}", p.HostConfig.PortBindings[$"{data.InternalPort}/{protocol}"][0].HostPort);
@@ -44,63 +44,66 @@ public partial class ServersServiceTests
     }
 
     [Fact]
-    public async void TestCreateServerFromImage_CreatesServer()
+    public async void TestCreateServerFromSnapshot_CreatesServer()
     {
-        ServerType type = ServerType.MinetestDevTest;
+        TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot);
         int port = 30512;
         string name = "New server";
         string description = "Description";
 
-        CreateServerFromImageRequest request = new(_user, type, port) {
+        CreateServerFromSnapshotRequest request = new(_user, snapshot.Id, port) {
             Name = name,
             Description = description
         };
 
-        TestCreateServerFromImage_SetupDockerMock(request);
+        TestCreateServerFromSnapshot_SetupDockerMock(request, snapshot);
 
-        var response = await _service.CreateServerFromImageAsync(request);
+        var response = await _service.CreateServerFromSnapshotAsync(request);
         Assert.Equal(BusinessStatusCodeEnum.Success, response.StatusCode);
 
         var server = _context.Servers.FirstOrDefault();
         Assert.NotNull(server);
 
-        Assert.Equal(type, server.Type);
+        Assert.Equal(snapshot.Type, server.Type);
         Assert.Equal(port, server.Port);
         Assert.Equal(name, server.Name);
         Assert.Equal(description, server.Description);
     }
 
     [Fact]
-    public async void TestCreateServerFromImage_InvalidType_Fails()
+    public async void TestCreateServerFromSnapshot_InvalidType_Fails()
     {
-        ServerType type = ServerType.Unknown;
+        TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot);
+        snapshot.Type = ServerType.Unknown;
+        await _context.SaveChangesAsync();
         int port = 30512;
 
         var response = await _service
-            .CreateServerFromImageAsync(new(_user, type, port));
+            .CreateServerFromSnapshotAsync(new(_user, snapshot.Id, port));
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
     }
 
     [Fact]
-    public async void TestCreateServerFromImage_TooLowPort_Fails()
+    public async void TestCreateServerFromSnapshot_TooLowPort_Fails()
     {
-        ServerType type = ServerType.MinetestDevTest;
+        TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot);
         int port = 1000;
 
         var response = await _service
-            .CreateServerFromImageAsync(new(_user, type, port));
+            .CreateServerFromSnapshotAsync(new(_user, snapshot.Id, port));
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
     }
 
     [Fact]
-    public async void TestCreateServerFromImage_InvalidName_Fails()
+    public async void TestCreateServerFromSnapshot_InvalidName_Fails()
     {
-        ServerType type = ServerType.MinetestDevTest;
+        TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot);
         int port = 30512;
         string name = new String('n', 512); // too long
 
         var response = await _service
-            .CreateServerFromImageAsync(new(_user, type, port) { Name = name });
+            .CreateServerFromSnapshotAsync(new(_user, snapshot.Id, port) { Name = name });
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
     }
 }
+
