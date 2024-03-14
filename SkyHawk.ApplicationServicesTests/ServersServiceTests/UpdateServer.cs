@@ -108,4 +108,18 @@ public partial class ServersServiceTests : IDisposable
         var response = await _service.UpdateServerAsync(request);
         Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
     }
+
+    [Fact]
+    public async void TestUpdateServer_OtherOwner_Fails()
+    {
+        var server = GetValidServerEntity();
+        var stranger = UsersServiceTests.GetValidUserEntity();
+        _context.Add(server);
+        _context.Add(stranger);
+        _context.SaveChanges();
+
+        UpdateServerRequest request = new (stranger.Id, server.Id);
+        var response = await _service.UpdateServerAsync(request);
+        Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
+    }
 }
