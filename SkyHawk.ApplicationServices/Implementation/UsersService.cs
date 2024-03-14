@@ -174,6 +174,9 @@ public class UsersService : IUsersService
         if(user.Password != request.Password)
             return new(BusinessStatusCodeEnum.AuthenticationFailed, "Wrong password!");
 
+        user.LastLogin = DateTime.Now;
+        await _context.SaveChangesAsync();
+
         string token = GenerateJwtTokenInternal(user);
 
         return new(token, "Authentication successfull.");
