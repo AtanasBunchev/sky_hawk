@@ -67,10 +67,14 @@ public class ServersService : IServersService
     public async Task<CreateServerFromImageResponse> CreateServerFromImageAsync(CreateServerFromImageRequest request)
     {
         string? errorMessage = CreateServer_ValidateArguments(request.Type, request.Port, request.Name, request.Description);
-        if(errorMessage != null)
+        var data = ServerDefaults.Get(request.Type);
+        if(errorMessage != null || data == null) // Cover a false warning
             return new(BusinessStatusCodeEnum.InvalidInput, errorMessage);
 
-        var data = ServerDefaults.Get(request.Type);
+        var user = _context.Users.SingleOrDefault(x => x.Id == request.UserId);
+        if(user == null)
+            return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+
         string image = await CreateServer_DownloadDockerImageAsync(data.Image, data.Tag);
         string containerId = await CreateServer_CreateContainerAsync(request.Type, image, request.Port);
 
@@ -79,7 +83,7 @@ public class ServersService : IServersService
             Type = request.Type,
             Port = request.Port,
 
-            Owner = _context.Users.SingleOrDefault(x => x.Id == request.UserId),
+            Owner = user,
 
             Name = request.Name,
             Description = request.Description
@@ -95,11 +99,15 @@ public class ServersService : IServersService
         var snapshot = await _context.Snapshots.SingleOrDefaultAsync
             (x => x.Owner.Id == request.UserId && x.Id == request.SnapshotId);
         if(snapshot == null)
-            return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found");
+            return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found!");
 
         string? errorMessage = CreateServer_ValidateArguments(snapshot.Type, request.Port, request.Name, request.Description);
         if(errorMessage != null)
             return new(BusinessStatusCodeEnum.InvalidInput, errorMessage);
+
+        var user = _context.Users.SingleOrDefault(x => x.Id == request.UserId);
+        if(user == null)
+            return new(BusinessStatusCodeEnum.NotFound, "User not found!");
 
         var data = ServerDefaults.Get(snapshot.Type);
         string containerId = await CreateServer_CreateContainerAsync(snapshot.Type, snapshot.ImageId, request.Port);
@@ -110,7 +118,7 @@ public class ServersService : IServersService
             Type = snapshot.Type,
             Port = request.Port,
 
-            Owner = _context.Users.SingleOrDefault(x => x.Id == request.UserId),
+            Owner = user,
 
             Name = request.Name,
             Description = request.Description
