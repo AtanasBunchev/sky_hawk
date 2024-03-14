@@ -7,7 +7,7 @@ using SkyHawk.DataMock.Contexts;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class SnapshotsServiceTests
+public partial class SnapshotsServiceTests : IDisposable
 {
     private SkyHawkDbContextMock _context;
     private Mock<IDockerClient> _docker;
@@ -36,5 +36,10 @@ public partial class SnapshotsServiceTests
             Name = "My Snapshot",
             Description = "I has a snapshot :D"
         };
+    }
+
+    public void Dispose()
+    {
+        _docker.Verify();
     }
 }

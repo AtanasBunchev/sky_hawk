@@ -3,7 +3,7 @@ using SkyHawk.Data.Entities;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class SnapshotsServiceTests
+public partial class SnapshotsServiceTests : IDisposable
 {
     [Fact]
     public async void TestGetSnapshotByName()
