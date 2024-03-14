@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.Data", "SkyHawk.Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.WebAPI", "SkyHawk.WebAPI\SkyHawk.WebAPI.csproj", "{B9640B4E-3E36-413F-936E-D66CC45B9098}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyHawk.WebAPITests", "SkyHawk.WebAPITests\SkyHawk.WebAPITests.csproj", "{084C91C1-12BC-49A2-9A80-250CCBE1710F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,9 +36,5 @@ Global
 		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9640B4E-3E36-413F-936E-D66CC45B9098}.Release|Any CPU.Build.0 = Release|Any CPU
-		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{084C91C1-12BC-49A2-9A80-250CCBE1710F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
