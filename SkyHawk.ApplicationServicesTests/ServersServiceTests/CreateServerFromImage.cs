@@ -8,11 +8,12 @@ using Docker.DotNet.Models;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class ServersServiceTests
+public partial class ServersServiceTests : IDisposable
 {
     private void TestCreateServerFromImage_SetupDockerMock(CreateServerFromImageRequest request)
     {
         var data = ServerDefaults.Get(request.Type);
+        Assert.NotNull(data);
 
         _docker.Setup(x => x.Images.CreateImageAsync(
                 It.IsAny<ImagesCreateParameters>(),
@@ -22,10 +23,11 @@ public partial class ServersServiceTests
             ))
             .Callback<ImagesCreateParameters, AuthConfig, IProgress<JSONMessage>, CancellationToken>
                 ((p, _, _, _) => {
-                    Assert.Equal(data.Image, p?.FromImage);
+                    Assert.Equal(data.Image, p.FromImage);
                     Assert.Equal(data.Tag, p.Tag);
                 })
-            .Returns(Task.FromResult(default(object))); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
+            .Returns(Task.FromResult(default(object)))
+            .Verifiable(); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
 
         CreateContainerResponse createResult = new() { ID = new String('0', 64) };
         _docker.Setup(
@@ -35,12 +37,15 @@ public partial class ServersServiceTests
                 ))
             .Callback<CreateContainerParameters, CancellationToken>
                 ((p, _) => {
-                    Assert.Equal($"{data.Image}:{data.Tag}", p?.Image);
+                    Assert.NotNull(p.Image);
+                    Assert.Equal($"{data.Image}:{data.Tag}", p.Image);
+                    Assert.NotNull(p.Env);
                     Assert.Equal(data.Env, p.Env);
                     string protocol = data.Protocol == PortProtocol.UDP ? "udp" : "tcp";
                     Assert.Equal($"{request.Port}", p.HostConfig.PortBindings[$"{data.InternalPort}/{protocol}"][0].HostPort);
                 })
-            .ReturnsAsync(createResult);
+            .ReturnsAsync(createResult)
+            .Verifiable();
     }
 
     [Fact]

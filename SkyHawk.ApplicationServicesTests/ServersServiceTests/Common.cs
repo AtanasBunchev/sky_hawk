@@ -7,7 +7,7 @@ using SkyHawk.DataMock.Contexts;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class ServersServiceTests
+public partial class ServersServiceTests : IDisposable
 {
     private SkyHawkDbContextMock _context;
     private Mock<IDockerClient> _docker;
@@ -36,5 +36,10 @@ public partial class ServersServiceTests
             Name = "My Server",
             Description = "I has a game server :D"
         };
+    }
+
+    public void Dispose()
+    {
+        _docker.Verify();
     }
 }

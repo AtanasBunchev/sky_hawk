@@ -4,7 +4,7 @@ using SkyHawk.ApplicationServices.Messaging;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class ServersServiceTests
+public partial class ServersServiceTests : IDisposable
 {
     [Fact]
     public async void UpdateServerImage_Succeeds()

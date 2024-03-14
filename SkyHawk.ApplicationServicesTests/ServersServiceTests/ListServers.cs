@@ -2,7 +2,7 @@ using SkyHawk.Data.Entities;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class ServersServiceTests
+public partial class ServersServiceTests : IDisposable
 {
     [Fact]
     public async void TestListServers()

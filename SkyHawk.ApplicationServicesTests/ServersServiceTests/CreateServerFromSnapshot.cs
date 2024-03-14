@@ -8,7 +8,7 @@ using Docker.DotNet.Models;
 
 namespace SkyHawk.ApplicationServicesTests;
 
-public partial class ServersServiceTests
+public partial class ServersServiceTests : IDisposable
 {
     private void TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot)
     {
@@ -26,6 +26,7 @@ public partial class ServersServiceTests
     private void TestCreateServerFromSnapshot_SetupDockerMock(CreateServerFromSnapshotRequest request, Snapshot snapshot)
     {
         var data = ServerDefaults.Get(snapshot.Type);
+        Assert.NotNull(data);
 
         CreateContainerResponse createResult = new() { ID = new String('0', 64) };
         _docker.Setup(
