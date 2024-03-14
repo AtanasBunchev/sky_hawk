@@ -91,7 +91,7 @@ public class ServersService : IServersService
         _context.Servers.Add(server);
         await _context.SaveChangesAsync();
 
-        return new(BusinessStatusCodeEnum.Success);
+        return new(server.Id);
     }
 
     public async Task<CreateServerFromSnapshotResponse> CreateServerFromSnapshotAsync(CreateServerFromSnapshotRequest request)
@@ -127,7 +127,7 @@ public class ServersService : IServersService
         _context.Servers.Add(server);
         await _context.SaveChangesAsync();
 
-        return new(BusinessStatusCodeEnum.Success);
+        return new(server.Id);
     }
 
     /// <returns> Error message or null on success </returns>
