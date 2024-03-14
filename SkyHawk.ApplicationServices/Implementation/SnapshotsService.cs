@@ -1,4 +1,5 @@
 using Docker.DotNet;
+using Docker.DotNet.Models;
 using Microsoft.EntityFrameworkCore;
 using SkyHawk.ApplicationServices.Interfaces;
 using SkyHawk.ApplicationServices.Messaging;
@@ -6,6 +7,7 @@ using SkyHawk.ApplicationServices.Messaging.Requests;
 using SkyHawk.ApplicationServices.Messaging.Responses;
 using SkyHawk.Data.Contexts;
 using SkyHawk.Data.Entities;
+using SkyHawk.Data.Server;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -63,7 +65,54 @@ public class SnapshotsService : ISnapshotsService
 
     public async Task<CreateSnapshotResponse> CreateSnapshotAsync(CreateSnapshotRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var user = await _context.Users.SingleOrDefaultAsync(x => x.Id == request.UserId);
+        if(user == null)
+            return new(BusinessStatusCodeEnum.NotFound, "User not found!");
+
+        var server = await _context.Servers.SingleOrDefaultAsync
+            (x => x.Id == request.ServerId && x.Owner.Id == request.UserId);
+        if(server == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
+
+        var data = ServerDefaults.Get(server.Type);
+        if(data == null) // false warning suppression (unless database entry was invalidated)
+            return new(BusinessStatusCodeEnum.InvalidInput, "ServerType is unknown!");
+
+
+        var maxNameLength = typeof(Snapshot).GetProperty("Name")
+                ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+        if(maxNameLength != null && request.Name.Length > maxNameLength)
+            return new(BusinessStatusCodeEnum.InvalidInput,
+                $"Name must be less than {maxNameLength} symbols long!");
+
+
+        var maxDescriptionLength = typeof(Snapshot).GetProperty("Description")
+                ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+        if(maxDescriptionLength != null && request.Description.Length > maxDescriptionLength)
+            return new(BusinessStatusCodeEnum.InvalidInput,
+                $"Description must be less than {maxDescriptionLength} symbols long!");
+
+
+        var response = await _docker.Images.CommitContainerChangesAsync(
+            new CommitContainerChangesParameters {
+                ContainerID = server.ContainerId
+            }
+        );
+
+        var imageId = response.ID;
+
+        var snapshot = new Snapshot {
+            ImageId = imageId,
+            Type = server.Type,
+            Owner = user,
+            Name = request.Name,
+            Description = request.Description
+        };
+
+        _context.Snapshots.Add(snapshot);
+        await _context.SaveChangesAsync();
+
+        return new(snapshot.Id);
     }
 
 
