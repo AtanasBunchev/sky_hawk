@@ -27,5 +27,6 @@ public interface IServersService
 
 
     // Control server instance (power on/off)
-    public Task<ControlServerResponse> ControlServerAsync(ControlServerRequest request);
+    public Task<StartServerResponse> StartServerAsync(StartServerRequest request);
+    public Task<StopServerResponse> StopServerAsync(StopServerRequest request);
 }

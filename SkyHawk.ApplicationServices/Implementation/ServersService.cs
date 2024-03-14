@@ -302,7 +302,12 @@ public class ServersService : IServersService
     }
 
 
-    public async Task<ControlServerResponse> ControlServerAsync(ControlServerRequest request)
+    public async Task<StartServerResponse> StartServerAsync(StartServerRequest request)
+    {
+        return new(BusinessStatusCodeEnum.NotImplemented);
+    }
+
+    public async Task<StopServerResponse> StopServerAsync(StopServerRequest request)
     {
         return new(BusinessStatusCodeEnum.NotImplemented);
     }
