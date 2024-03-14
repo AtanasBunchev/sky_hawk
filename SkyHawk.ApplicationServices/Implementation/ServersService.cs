@@ -176,6 +176,9 @@ public class ServersService : IServersService
     private async Task<string> CreateServer_CreateContainerAsync(ServerType type, string image, int port)
     {
         var data = ServerDefaults.Get(type);
+        if(data == null) // warning suppression
+            return "ServerType is unknown!";
+
         string protocol = data.Protocol == PortProtocol.UDP ? "udp" : "tcp";
 
         CreateContainerResponse response = await _docker.Containers.CreateContainerAsync(new CreateContainerParameters()
@@ -289,10 +292,11 @@ public class ServersService : IServersService
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 
-        _docker.Containers.RemoveContainerAsync(server.ContainerId, null);
+        var removeTask = _docker.Containers.RemoveContainerAsync(server.ContainerId, null);
 
         _context.Remove(server);
         await _context.SaveChangesAsync();
+        await removeTask;
 
         return new(BusinessStatusCodeEnum.Success, "Server deleted successfully.");
     }
