@@ -281,10 +281,10 @@ public class ServersService : IServersService
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 
+        _docker.Containers.RemoveContainerAsync(server.ContainerId, null);
+
         _context.Remove(server);
         await _context.SaveChangesAsync();
-
-        // TODO finish
 
         return new(BusinessStatusCodeEnum.Success, "Server deleted successfully.");
     }
