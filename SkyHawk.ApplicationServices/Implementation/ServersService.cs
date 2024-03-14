@@ -66,68 +66,48 @@ public class ServersService : IServersService
 
     public async Task<CreateServerFromImageResponse> CreateServerFromImageAsync(CreateServerFromImageRequest request)
     {
-        var defaults = ServerDefaults.Get(request.Type);
-        if(defaults == null)
-            return new(BusinessStatusCodeEnum.InvalidInput, "Unknown ServerType defaults!");
+        string? errorMessage = CreateServer_ValidateArguments(request.Type, request.Port, request.Name, request.Description);
+        if(errorMessage != null)
+            return new(BusinessStatusCodeEnum.InvalidInput, errorMessage);
 
-        if(request.Port <= 1000)
-            return new(BusinessStatusCodeEnum.InvalidInput, "Port must be over 1000!");
+        var data = ServerDefaults.Get(request.Type);
+        string image = await CreateServer_DownloadDockerImageAsync(data.Image, data.Tag);
+        string containerId = await CreateServer_CreateContainerAsync(request.Type, image, request.Port);
 
-        if(request.Name != null) {
-            var maxNameLength = typeof(ServerInstance).GetProperty("Name")
-                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
-            if(maxNameLength != null && request.Name.Length > maxNameLength)
-                return new(BusinessStatusCodeEnum.InvalidInput,
-                        $"Name must be less than {maxNameLength} symbols long!");
-        }
+        ServerInstance server = new ServerInstance {
+            ContainerId = containerId,
+            Type = request.Type,
+            Port = request.Port,
 
-        if(request.Description != null) {
-            var maxDescriptionLength = typeof(ServerInstance).GetProperty("Description")
-                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
-            if(maxDescriptionLength != null && request.Description.Length > maxDescriptionLength)
-                return new(BusinessStatusCodeEnum.InvalidInput,
-                        $"Description must be less than {maxDescriptionLength} symbols long!");
-        }
+            Owner = _context.Users.SingleOrDefault(x => x.Id == request.UserId),
 
+            Name = request.Name,
+            Description = request.Description
+        };
+        _context.Servers.Add(server);
+        await _context.SaveChangesAsync();
 
-        // Download the image
-        await _docker.Images.CreateImageAsync(
-            new ImagesCreateParameters
-            {
-                FromImage = defaults.Image,
-                Tag = defaults.Tag,
-            },
-            null,
-            new Progress<JSONMessage>());
+        return new(BusinessStatusCodeEnum.Success);
+    }
 
-        string protocol = defaults.Protocol == PortProtocol.UDP ? "udp" : "tcp";
+    public async Task<CreateServerFromSnapshotResponse> CreateServerFromSnapshotAsync(CreateServerFromSnapshotRequest request)
+    {
+        var snapshot = await _context.Snapshots.SingleOrDefaultAsync
+            (x => x.Owner.Id == request.UserId && x.Id == request.SnapshotId);
+        if(snapshot == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found");
 
-        // Create the container
-        CreateContainerResponse response = await _docker.Containers.CreateContainerAsync(new CreateContainerParameters()
-        {
-            Image = $"{defaults.Image}:{defaults.Tag}",
-            HostConfig = new HostConfig()
-            {
-                PortBindings = new Dictionary<string, IList<PortBinding>>
-                {
-                    [$"{defaults.InternalPort}/{protocol}"] = new List<PortBinding>
-                    {
-                        new PortBinding {
-                            HostPort = $"{request.Port}"
-                        }
-                    }
-                },
-                DNS = new[] { "9.9.9.9", "1.1.1.1", "8.8.8.8", "8.8.4.4" }
-            },
-            Env = defaults.Env
-        });
+        string? errorMessage = CreateServer_ValidateArguments(snapshot.Type, request.Port, request.Name, request.Description);
+        if(errorMessage != null)
+            return new(BusinessStatusCodeEnum.InvalidInput, errorMessage);
 
-        string containerId = response.ID;
+        var data = ServerDefaults.Get(snapshot.Type);
+        string containerId = await CreateServer_CreateContainerAsync(snapshot.Type, snapshot.ImageId, request.Port);
 
         // Store the server data
         ServerInstance server = new ServerInstance {
             ContainerId = containerId,
-            Type = request.Type,
+            Type = snapshot.Type,
             Port = request.Port,
 
             Owner = _context.Users.SingleOrDefault(x => x.Id == request.UserId),
@@ -142,10 +122,74 @@ public class ServersService : IServersService
         return new(BusinessStatusCodeEnum.Success);
     }
 
-
-    public async Task<CreateServerFromSnapshotResponse> CreateServerFromSnapshotAsync(CreateServerFromSnapshotRequest request)
+    /// <returns> Error message or null on success </returns>
+    private string? CreateServer_ValidateArguments(ServerType type, int port, string name, string description)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var data = ServerDefaults.Get(type);
+        if(data == null)
+            return "Unknown ServerType defaults!";
+
+        if(port <= 1000)
+            return "Port must be over 1000!";
+
+        if(name != null) {
+            var maxNameLength = typeof(ServerInstance).GetProperty("Name")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxNameLength != null && name.Length > maxNameLength)
+                return $"Name must be less than {maxNameLength} symbols long!";
+        }
+
+        if(description != null) {
+            var maxDescriptionLength = typeof(ServerInstance).GetProperty("Description")
+                    ?.GetCustomAttribute<MaxLengthAttribute>()?.Length;
+            if(maxDescriptionLength != null && description.Length > maxDescriptionLength)
+                return $"Description must be less than {maxDescriptionLength} symbols long!";
+        }
+
+        return null;
+    }
+
+    /// <returns> Image Name and Tag </returns>
+    private async Task<string> CreateServer_DownloadDockerImageAsync(string image, string tag)
+    {
+        await _docker.Images.CreateImageAsync(
+            new ImagesCreateParameters
+            {
+                FromImage = image,
+                Tag = tag,
+            },
+            null,
+            new Progress<JSONMessage>());
+
+        return $"{image}:{tag}";
+    }
+
+    /// <returns> Container ID </returns>
+    private async Task<string> CreateServer_CreateContainerAsync(ServerType type, string image, int port)
+    {
+        var data = ServerDefaults.Get(type);
+        string protocol = data.Protocol == PortProtocol.UDP ? "udp" : "tcp";
+
+        CreateContainerResponse response = await _docker.Containers.CreateContainerAsync(new CreateContainerParameters()
+        {
+            Image = image,
+            HostConfig = new HostConfig()
+            {
+                PortBindings = new Dictionary<string, IList<PortBinding>>
+                {
+                    [$"{data.InternalPort}/{protocol}"] = new List<PortBinding>
+                    {
+                        new PortBinding {
+                            HostPort = $"{port}"
+                        }
+                    }
+                },
+                DNS = new[] { "9.9.9.9", "1.1.1.1", "8.8.8.8", "8.8.4.4" }
+            },
+            Env = data.Env
+        });
+
+        return response.ID;
     }
 
 
@@ -239,6 +283,8 @@ public class ServersService : IServersService
 
         _context.Remove(server);
         await _context.SaveChangesAsync();
+
+        // TODO finish
 
         return new(BusinessStatusCodeEnum.Success, "Server deleted successfully.");
     }
