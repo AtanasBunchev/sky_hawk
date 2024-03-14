@@ -315,6 +315,12 @@ public class ServersService : IServersService
 
     public async Task<StopServerResponse> StopServerAsync(StopServerRequest request)
     {
-        return new(BusinessStatusCodeEnum.NotImplemented);
+        var server = (await GetServerByIdAsync(new(request.UserId, request.ServerId))).Server;
+        if(server == null)
+            return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
+
+        bool stateChanged = await _docker.Containers.StopContainerAsync(server.ContainerId, null);
+
+        return new(BusinessStatusCodeEnum.Success, stateChanged ? "Container stopped." : "Container already stopped.");
     }
 }
