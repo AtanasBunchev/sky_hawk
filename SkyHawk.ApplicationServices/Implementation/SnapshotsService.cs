@@ -107,6 +107,8 @@ public class SnapshotsService : ISnapshotsService
         if(snapshot == null)
             return new(BusinessStatusCodeEnum.NotFound, "Snapshot not found!");
 
+        _docker.Images.DeleteImageAsync(snapshot.ImageId, null);
+
         _context.Remove(snapshot);
         await _context.SaveChangesAsync();
 
