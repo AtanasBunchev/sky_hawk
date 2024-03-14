@@ -22,7 +22,7 @@ public partial class SnapshotsServiceTests : IDisposable
                     It.IsAny<CancellationToken>()
                 ))
             .ReturnsAsync(deleteResult)
-            .Verifiable(); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
+            .Verifiable();
     }
 
     [Fact]
@@ -42,5 +42,21 @@ public partial class SnapshotsServiceTests : IDisposable
 
         response = await _service.DeleteSnapshotAsync(new(_user, id));
         Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async void TestDeleteSnapshot_OtherOwner_Fails()
+    {
+        var snapshot = GetValidSnapshotEntity();
+        var stranger = UsersServiceTests.GetValidUserEntity();
+        _context.Add(snapshot);
+        _context.Add(stranger);
+        _context.SaveChanges();
+
+        DeleteSnapshotRequest request = new (stranger.Id, snapshot.Id);
+        var response = await _service.DeleteSnapshotAsync(request);
+        Assert.Equal(BusinessStatusCodeEnum.NotFound, response.StatusCode);
+
+        Assert.Single(_context.Snapshots.ToList());
     }
 }
