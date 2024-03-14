@@ -12,6 +12,9 @@ public enum BusinessStatusCodeEnum
 
     EntryAlreadyExists,
 
-    AuthenticationFailed
+    AuthenticationFailed,
 
+    PermittedLimitReached,
+
+    NoPermission,
 }

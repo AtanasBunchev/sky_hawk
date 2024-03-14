@@ -69,6 +69,9 @@ public class SnapshotsService : ISnapshotsService
         if(user == null)
             return new(BusinessStatusCodeEnum.NotFound, "User not found!");
 
+        if(user.CanMakeSnapshots == false)
+            return new(BusinessStatusCodeEnum.NoPermission, "This user is not allowed to make snapshots!");
+
         var server = await _context.Servers.SingleOrDefaultAsync
             (x => x.Id == request.ServerId && x.Owner.Id == request.UserId);
         if(server == null)

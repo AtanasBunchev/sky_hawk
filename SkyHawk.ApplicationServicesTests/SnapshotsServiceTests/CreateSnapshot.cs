@@ -58,6 +58,32 @@ public partial class SnapshotsServiceTests : IDisposable
     }
 
     [Fact]
+    public async void TestCreateSnapshot_NoPermission_Fails()
+    {
+        var server = new ServerInstance {
+            ContainerId = new String('c', 64),
+            Type = ServerType.MinetestDevTest,
+            Owner = _userObject,
+            Name = "Server",
+            Description = "Description"
+        };
+        _userObject.CanMakeSnapshots = false;
+        _context.Add(server);
+        await _context.SaveChangesAsync();
+
+        var snapshotImageId = new String('s', 64);
+
+        CreateSnapshotRequest request = new (_user, server.Id) {
+            Name = "Snapshot",
+            Description = "Description"
+        };
+
+        var response = await _service.CreateSnapshotAsync(request);
+        Assert.Equal(BusinessStatusCodeEnum.NoPermission, response.StatusCode);
+        Assert.Empty(_context.Snapshots);
+    }
+
+    [Fact]
     public async void TestCreateSnapshot_UserNotExists_Fails()
     {
         var server = new ServerInstance {

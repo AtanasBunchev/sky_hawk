@@ -2,6 +2,7 @@ using SkyHawk.Data.Entities;
 using SkyHawk.Data.Server;
 using SkyHawk.ApplicationServices.Messaging;
 using SkyHawk.ApplicationServices.Messaging.Requests;
+using SkyHawk.ApplicationServices.Messaging.Responses;
 using Moq;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -74,6 +75,31 @@ public partial class ServersServiceTests : IDisposable
         Assert.Equal(port, server.Port);
         Assert.Equal(name, server.Name);
         Assert.Equal(description, server.Description);
+    }
+
+    [Fact]
+    public async void TestCreateServerFromImage_OverLimit_Fails()
+    {
+        ServerType type = ServerType.MinetestDevTest;
+        int port = 30512;
+        string name = "New server";
+        string description = "Description";
+
+        CreateServerFromImageRequest request = new(_user, type, port) {
+            Name = name,
+            Description = description
+        };
+
+        TestCreateServerFromImage_SetupDockerMock(request);
+
+        CreateServerFromImageResponse response;
+        do {
+            response = await _service.CreateServerFromImageAsync(request);
+        } while(_context.Servers.ToList().Count <= _userObject.MaxServers && BusinessStatusCodeEnum.Success == response.StatusCode);
+
+        Assert.Equal(BusinessStatusCodeEnum.PermittedLimitReached, response.StatusCode);
+
+        Assert.Equal(_userObject.MaxServers, _context.Servers.ToList().Count);
     }
 
     [Fact]

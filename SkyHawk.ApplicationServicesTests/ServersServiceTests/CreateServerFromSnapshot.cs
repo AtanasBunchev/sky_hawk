@@ -2,6 +2,7 @@ using SkyHawk.Data.Entities;
 using SkyHawk.Data.Server;
 using SkyHawk.ApplicationServices.Messaging;
 using SkyHawk.ApplicationServices.Messaging.Requests;
+using SkyHawk.ApplicationServices.Messaging.Responses;
 using Moq;
 using Docker.DotNet;
 using Docker.DotNet.Models;
@@ -107,5 +108,30 @@ public partial class ServersServiceTests : IDisposable
             .CreateServerFromSnapshotAsync(new(_user, snapshot.Id, port) { Name = name });
         Assert.Equal(BusinessStatusCodeEnum.InvalidInput, response.StatusCode);
     }
+
+    [Fact]
+    public async void TestCreateServerFromSnapshot_OverLimit_Fails()
+    {
+        TestCreateServerFromSnapshot_SetupSnapshot(out Snapshot snapshot);
+
+        int port = 30512;
+        string name = "New server";
+        string description = "Description";
+
+        CreateServerFromSnapshotRequest request = new(_user, snapshot.Id, port) {
+            Name = name,
+            Description = description
+        };
+        TestCreateServerFromSnapshot_SetupDockerMock(request, snapshot);
+
+        CreateServerFromSnapshotResponse response;
+        do {
+            response = await _service.CreateServerFromSnapshotAsync(request);
+        } while(_context.Servers.ToList().Count <= _userObject.MaxServers && BusinessStatusCodeEnum.Success == response.StatusCode);
+        Assert.Equal(BusinessStatusCodeEnum.PermittedLimitReached, response.StatusCode);
+
+        Assert.Equal(_userObject.MaxServers, _context.Servers.ToList().Count);
+    }
+
 }
 
