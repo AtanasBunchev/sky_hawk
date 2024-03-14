@@ -31,7 +31,10 @@ public class ServersService : IServersService
             .Include(c => c.Owner)
             .Load();
 
-        return new(await _context.Servers.Where(x => x.Owner.Id == request.UserId).ToListAsync());
+        var list = await _context.Servers.Where(x => x.Owner.Id == request.UserId).ToListAsync();
+        if(request.PageSize < 0)
+            return new(list);
+        return new(list.Skip((request.Page - 1) * request.PageSize).Take(request.PageSize).ToList(), request.Page, request.PageSize);
     }
 
 

@@ -36,9 +36,9 @@ public class ServersController : ControllerBase
     [HttpGet]
     [HttpGet("list")]
     [ProducesResponseType(typeof(ListServersResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ListServersResponse>> ListServers()
+    public async Task<ActionResult<ListServersResponse>> ListServers([FromQuery] int page = 1, [FromQuery] int pageSize = -1)
     {
-        return Ok(await _service.ListServersAsync(new(_user)));
+        return Ok(await _service.ListServersAsync(new(_user, page, pageSize)));
     }
 
     [HttpGet("{id}")]

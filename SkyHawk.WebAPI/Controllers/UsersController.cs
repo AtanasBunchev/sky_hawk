@@ -36,9 +36,9 @@ public class UserController : ControllerBase
     [HttpGet]
     [HttpGet("list")]
     [ProducesResponseType(typeof(ListUsersResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ListUsersResponse>> ListUsers()
+    public async Task<ActionResult<ListUsersResponse>> ListUsers([FromQuery] int page = 1, [FromQuery] int pageSize = -1)
     {
-        return Ok(await _service.ListUsersAsync(new()));
+        return Ok(await _service.ListUsersAsync(new(page, pageSize)));
     }
 
     [HttpGet("{id}")]

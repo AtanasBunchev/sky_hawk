@@ -36,9 +36,9 @@ public class SnapshotsController : ControllerBase
     [HttpGet]
     [HttpGet("list")]
     [ProducesResponseType(typeof(ListSnapshotsResponse), StatusCodes.Status200OK)]
-    public async Task<ActionResult<ListSnapshotsResponse>> ListSnapshots()
+    public async Task<ActionResult<ListSnapshotsResponse>> ListSnapshots([FromQuery] int page = 1, [FromQuery] int pageSize = -1)
     {
-        return Ok(await _service.ListSnapshotsAsync(new(_user)));
+        return Ok(await _service.ListSnapshotsAsync(new(_user, page, pageSize)));
     }
 
     [HttpGet("{id}")]

@@ -34,7 +34,11 @@ public class UsersService : IUsersService
 
     public async Task<ListUsersResponse> ListUsersAsync(ListUsersRequest request)
     {
-        return new(await _context.Users.Select(x => _mapper.Map<UserVM>(x)).ToListAsync());
+        var list = await _context.Users.Select(x => _mapper.Map<UserVM>(x)).ToListAsync();
+
+        if(request.PageSize < 0)
+            return new(list);
+        return new(list.Skip((request.Page - 1) * request.PageSize).Take(request.PageSize).ToList(), request.Page, request.PageSize);
     }
 
 

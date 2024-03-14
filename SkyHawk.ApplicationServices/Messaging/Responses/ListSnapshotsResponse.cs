@@ -6,6 +6,8 @@ namespace SkyHawk.ApplicationServices.Messaging.Responses;
 public class ListSnapshotsResponse : ResponseBase
 {
     public ICollection<Snapshot> Snapshots { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = -1;
 
     public ListSnapshotsResponse(ICollection<Snapshot> snapshots)
         : base(BusinessStatusCodeEnum.Success, "Snapshots list fetched successfully.")
@@ -23,5 +25,13 @@ public class ListSnapshotsResponse : ResponseBase
         : base(statusCode, msg)
     {
         Snapshots = snapshots;
+    }
+
+    public ListSnapshotsResponse(ICollection<Snapshot> snapshots, int page, int pageSize)
+        : base(BusinessStatusCodeEnum.Success, "Snapshots list fetched successfully.")
+    {
+        Snapshots = snapshots;
+        Page = page;
+        PageSize = pageSize;
     }
 };

@@ -21,4 +21,6 @@ public partial class SnapshotsServiceTests : IDisposable
         foreach(var returnedSnapshot in response.Snapshots)
             Assert.Equal(snapshot, returnedSnapshot);
     }
+
+    // TODO list paged requests
 }
