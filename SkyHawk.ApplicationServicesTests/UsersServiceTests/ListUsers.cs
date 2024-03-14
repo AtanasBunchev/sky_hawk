@@ -22,8 +22,8 @@ public partial class UsersServiceTests
             Assert.Equal(user.Id, returnedUser.Id);
             Assert.Equal(user.Username, returnedUser.Username);
             Assert.Equal(user.CreateTime, returnedUser.CreateTime);
+            Assert.Equal(user.LastLogin, returnedUser.LastLogin);
             Assert.Equal(user.MaxServers, returnedUser.MaxServers);
-            Assert.Equal(user.MaxRunningServers, returnedUser.MaxRunningServers);
             Assert.Equal(user.CanMakeSnapshots, returnedUser.CanMakeSnapshots);
         }
     }

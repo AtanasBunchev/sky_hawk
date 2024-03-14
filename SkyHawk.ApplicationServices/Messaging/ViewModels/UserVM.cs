@@ -8,9 +8,9 @@ public class UserVM
 
     public string Username { get; set; }
     public DateTime CreateTime { get; set; }
+    public DateTime LastLogin { get; set; }
 
     public int MaxServers { get; set; }
-    public int MaxRunningServers { get; set; }
     public bool CanMakeSnapshots { get; set; }
 }
 

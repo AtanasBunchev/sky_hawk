@@ -22,40 +22,6 @@ namespace SkyHawk.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SkyHawk.Data.Entities.Activity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<int>("ServerId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ServerId");
-
-                    b.ToTable("Activities");
-                });
-
             modelBuilder.Entity("SkyHawk.Data.Entities.ServerInstance", b =>
                 {
                     b.Property<int>("Id")
@@ -159,8 +125,8 @@ namespace SkyHawk.Data.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MaxRunningServers")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("LastLogin")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("MaxServers")
                         .HasColumnType("int");
@@ -178,17 +144,6 @@ namespace SkyHawk.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("SkyHawk.Data.Entities.Activity", b =>
-                {
-                    b.HasOne("SkyHawk.Data.Entities.ServerInstance", "Server")
-                        .WithMany("Activities")
-                        .HasForeignKey("ServerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Server");
                 });
 
             modelBuilder.Entity("SkyHawk.Data.Entities.ServerInstance", b =>
@@ -211,11 +166,6 @@ namespace SkyHawk.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("SkyHawk.Data.Entities.ServerInstance", b =>
-                {
-                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("SkyHawk.Data.Entities.User", b =>

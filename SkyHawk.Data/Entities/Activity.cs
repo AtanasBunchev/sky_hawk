@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SkyHawk.Data.Entities;
 
+/*
+ * Unused due deadline time
+ *
 public enum StartReasonEnum
 {
     Unknown = 0,
@@ -23,3 +26,4 @@ public class Activity : Entity
     public string Description { get; set; } = null!;
     //public string Logs { get; set; } = null!;
 }
+*/

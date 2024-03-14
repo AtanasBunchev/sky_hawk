@@ -22,6 +22,6 @@ public class ServerInstance : Entity
     public TimeOnly? AutoStart { get; set; } = null;
     public TimeOnly? AutoStop { get; set; } = null;
 
-    [InverseProperty("Server")]
-    public List<Activity> Activities { get; set; } = new();
+    // [InverseProperty("Server")]
+    // public List<Activity> Activities { get; set; } = new();
 }

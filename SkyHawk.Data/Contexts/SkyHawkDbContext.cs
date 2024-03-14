@@ -8,7 +8,7 @@ public class SkyHawkDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<ServerInstance> Servers { get; set; }
     public DbSet<Snapshot> Snapshots { get; set; }
-    public DbSet<Activity> Activities { get; set; }
+    // public DbSet<Activity> Activities { get; set; }
 
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
