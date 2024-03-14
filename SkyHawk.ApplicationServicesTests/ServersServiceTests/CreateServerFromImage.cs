@@ -12,20 +12,35 @@ public partial class ServersServiceTests
 {
     private void TestCreateServerFromImage_SetupDockerMock(CreateServerFromImageRequest request)
     {
+        var data = ServerDefaults.Get(request.Type);
+
         _docker.Setup(x => x.Images.CreateImageAsync(
                 It.IsAny<ImagesCreateParameters>(),
                 It.IsAny<AuthConfig>(),
                 It.IsAny<IProgress<JSONMessage>>(),
                 It.IsAny<CancellationToken>()
-            )
-        ).Returns(Task.FromResult(default(object))); // https://stackoverflow.com/questions/21253523/
+            ))
+            .Callback<ImagesCreateParameters, AuthConfig, IProgress<JSONMessage>, CancellationToken>
+                ((p, _, _, _) => {
+                    Assert.Equal(data.Image, p.FromImage);
+                    Assert.Equal(data.Tag, p.Tag);
+                })
+            .Returns(Task.FromResult(default(object))); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
 
         CreateContainerResponse createResult = new() { ID = new String('0', 64)};
-        _docker.Setup(x => x.Containers.CreateContainerAsync(
-                It.IsAny<CreateContainerParameters>(),
-                It.IsAny<CancellationToken>()
-            )
-        ).ReturnsAsync(createResult);
+        _docker.Setup(
+                x => x.Containers.CreateContainerAsync(
+                    It.IsAny<CreateContainerParameters>(),
+                    It.IsAny<CancellationToken>()
+                ))
+            .Callback<CreateContainerParameters, CancellationToken>
+                ((p, _) => {
+                    Assert.Equal($"{data.Image}:{data.Tag}", p.Image);
+                    Assert.Equal(data.Env, p.Env);
+                    string protocol = data.Protocol == PortProtocol.UDP ? "udp" : "tcp";
+                    Assert.Equal($"{request.Port}", p.HostConfig.PortBindings[$"{data.InternalPort}/{protocol}"][0].HostPort);
+                })
+            .ReturnsAsync(createResult);
     }
 
     [Fact]

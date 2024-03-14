@@ -102,22 +102,29 @@ public class ServersService : IServersService
 
         string protocol = defaults.Protocol == PortProtocol.UDP ? "udp" : "tcp";
 
-        Dictionary<string, EmptyStruct> exposedPorts = new();
-        exposedPorts.Add($"{request.Port}:{defaults.InternalPort}/{protocol}", default);
-
+        // Create the container
         CreateContainerResponse response = await _docker.Containers.CreateContainerAsync(new CreateContainerParameters()
         {
             Image = $"{defaults.Image}:{defaults.Tag}",
             HostConfig = new HostConfig()
             {
-                DNS = new[] { "9.9.9.9", "8.8.8.8", "8.8.4.4", "1.1.1.1" }
+                PortBindings = new Dictionary<string, IList<PortBinding>>
+                {
+                    [$"{defaults.InternalPort}/{protocol}"] = new List<PortBinding>
+                    {
+                        new PortBinding {
+                            HostPort = $"{request.Port}"
+                        }
+                    }
+                },
+                DNS = new[] { "9.9.9.9", "1.1.1.1", "8.8.8.8", "8.8.4.4" }
             },
-            Env = defaults.Env,
-            ExposedPorts = exposedPorts
+            Env = defaults.Env
         });
 
         string containerId = response.ID;
 
+        // Store the server data
         ServerInstance server = new ServerInstance {
             ContainerId = containerId,
             Type = request.Type,
