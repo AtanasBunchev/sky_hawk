@@ -27,7 +27,7 @@ public partial class ServersServiceTests : IDisposable
                     Assert.Equal(data.Tag, p.Tag);
                 })
             .Returns(Task.FromResult(default(object)))
-            .Verifiable(); // Ty Pan hsttps://stackoverflow.com/questions/21253523/
+            .Verifiable();
 
         CreateContainerResponse createResult = new() { ID = new String('0', 64) };
         _docker.Setup(
@@ -69,6 +69,7 @@ public partial class ServersServiceTests : IDisposable
         var server = _context.Servers.FirstOrDefault();
         Assert.NotNull(server);
 
+        Assert.Equal(server.Id, response.ServerId);
         Assert.Equal(type, server.Type);
         Assert.Equal(port, server.Port);
         Assert.Equal(name, server.Name);

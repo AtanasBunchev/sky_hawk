@@ -65,6 +65,7 @@ public partial class ServersServiceTests : IDisposable
         var server = _context.Servers.FirstOrDefault();
         Assert.NotNull(server);
 
+        Assert.Equal(snapshot.Id, response.ServerId);
         Assert.Equal(snapshot.Type, server.Type);
         Assert.Equal(port, server.Port);
         Assert.Equal(name, server.Name);
