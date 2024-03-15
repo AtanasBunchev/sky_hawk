@@ -38,7 +38,7 @@ public static class ServerDefaults
                 "PUID=1000",
                 "PGID=1000",
                 "TZ=Etc/UTC",
-                "CLI_ARGS=\"--gameid devtest --port 30000\""
+                "CLI_ARGS=--gameid devtest --port 30000"
             }
         }/*,
         new ServerDefaultsBundle {
