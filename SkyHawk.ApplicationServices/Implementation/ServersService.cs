@@ -299,7 +299,7 @@ public class ServersService : IServersService
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 
-        var removeTask = _docker.Containers.RemoveContainerAsync(server.ContainerId, null);
+        var removeTask = _docker.Containers.RemoveContainerAsync(server.ContainerId, new());
 
         _context.Remove(server);
         await _context.SaveChangesAsync();
@@ -326,7 +326,10 @@ public class ServersService : IServersService
         if(server == null)
             return new(BusinessStatusCodeEnum.NotFound, "Server not found!");
 
-        bool stateChanged = await _docker.Containers.StopContainerAsync(server.ContainerId, null);
+        bool stateChanged = await _docker.Containers.StopContainerAsync(
+            server.ContainerId,
+            new(){ WaitBeforeKillSeconds = 10 }
+        );
 
         return new(BusinessStatusCodeEnum.Success, stateChanged ? "Container stopped." : "Container already stopped.");
     }
