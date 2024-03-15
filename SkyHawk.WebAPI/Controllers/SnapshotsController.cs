@@ -23,14 +23,16 @@ namespace SkyHawk.WebAPI.Controllers;
 public class SnapshotsController : ControllerBase
 {
     private ISnapshotsService _service;
-    private int _user = -1; // invalid id
+    private int _user { get {
+        var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
+        int id = -1;
+        int.TryParse(claim?.Value, out id);
+        return id;
+    } }
 
     public SnapshotsController(ISnapshotsService service)
     {
         _service = service;
-
-        var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
-        int.TryParse(claim?.Value, out _user);
     }
 
     [HttpGet]
