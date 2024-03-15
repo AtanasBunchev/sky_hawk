@@ -142,9 +142,9 @@ public class UserController : ControllerBase
     {
         var claim = HttpContext?.User?.Claims?.SingleOrDefault(u => u.Type == "LoggedUserId");
         if (!int.TryParse(claim?.Value, out int id))
-            return BadRequest(new UpdateUserResponse(BusinessStatusCodeEnum.InvalidInput, "Invalid Id"));
+            return BadRequest(new DeleteUserResponse(BusinessStatusCodeEnum.InvalidInput, "Invalid Id"));
 
-        var response = await _service.UpdateUserAsync(new(id));
+        var response = await _service.DeleteUserAsync(new(id));
         if(response.StatusCode == BusinessStatusCodeEnum.Success)
             return Ok(response);
         else if(response.StatusCode == BusinessStatusCodeEnum.NotFound)
